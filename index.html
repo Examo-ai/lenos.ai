@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lenos.ai</title>
+    <!-- KaTeX for LaTeX Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1tBCETigGWipszzSo+AUXLy2eVvx" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmImKTgiLR" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44SUqw4MB1trInXZnVdkYWPIx7vZ199QCsmSaxCVA" crossorigin="anonymous"
+        onload="renderMathInElement(document.body,{delimiters: [{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false},{left: '\\(', right: '\\)', display: false},{left: '\\[', right: '\\]', display: true}]});"></script>
+    <!-- Google Fonts (Poppins) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #121212; /* Very dark grey */
+            --bg-secondary: #1e1e1e; /* Dark grey */
+            --bg-tertiary: #2a2a2a; /* Medium grey */
+            --bg-interactive: #333333; /* Lighter grey for interactions */
+            --text-primary: #e0e0e0; /* Light grey/off-white */
+            --text-secondary: #a0a0a0; /* Medium grey text */
+            --text-placeholder: #757575;
+            --accent-color: #007bff; /* Blue accent */
+            --accent-hover: #0056b3;
+            --accent-glow: rgba(0, 123, 255, 0.3);
+            --error-color: #e53935; /* Red for errors */
+            --error-bg: rgba(229, 57, 53, 0.1);
+            --user-bubble: #005c4b; /* Dark teal for user */
+            --user-text: #ffffff;
+            --ai-bubble: #303030; /* Slightly lighter than tertiary bg */
+            --ai-text: var(--text-primary);
+            --thought-bubble: #252525; /* Distinct bg for thoughts */
+            --thought-text: var(--text-secondary);
+            --border-color: #424242;
+            --font-main: 'Poppins', sans-serif;
+            --border-radius-main: 12px;
+            --border-radius-small: 8px;
+            --padding-main: 20px;
+            --padding-medium: 15px;
+            --padding-small: 10px;
+            --sidebar-width: 280px;
+            --sidebar-width-collapsed: 70px;
+            --transition-speed: 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-interactive) var(--bg-secondary);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background-color: var(--bg-interactive); border-radius: 10px; border: 2px solid var(--bg-secondary); }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-main);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            font-size: 16px;
+        }
+
+        /* --- Layout --- */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            transition: padding-left var(--transition-speed); /* Animate content shift */
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-secondary);
+            padding: var(--padding-main);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
+            transition: width var(--transition-speed), padding var(--transition-speed);
+            overflow: hidden; /* Hide content during transition */
+            position: relative; /* For toggle button positioning */
+        }
+
+        .chat-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-primary);
+            height: 100%;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            min-height: 40px; /* Ensure space even when text is hidden */
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity var(--transition-speed);
+        }
+        .sidebar-header h1 .ai-name { color: var(--accent-color); }
+
+        #new-chat-btn {
+            display: flex; /* Use flex for icon alignment */
+            align-items: center;
+            justify-content: center; /* Center icon when text is hidden */
+            width: 100%;
+            padding: var(--padding-small) var(--padding-medium);
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: background-color var(--transition-speed);
+            margin-top: 10px; /* Space below title */
+            white-space: nowrap; /* Prevent text wrap */
+            overflow: hidden;
+        }
+        #new-chat-btn svg { margin-right: 8px; width: 18px; height: 18px; flex-shrink: 0; }
+        #new-chat-btn span { transition: opacity 0.2s ease; }
+        #new-chat-btn:hover { background-color: var(--accent-hover); }
+
+        #chat-list {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-top: var(--padding-medium);
+            padding-right: 5px; /* Space for scrollbar */
+        }
+
+        #chat-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--padding-small) var(--padding-medium);
+            margin-bottom: 8px;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            white-space: nowrap;
+            overflow: hidden;
+            position: relative;
+            color: var(--text-secondary);
+        }
+        #chat-list li .chat-name {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            flex-grow: 1;
+            transition: opacity var(--transition-speed);
+        }
+        #chat-list li:hover { background-color: var(--bg-tertiary); color: var(--text-primary); }
+        #chat-list li.active { background-color: var(--bg-interactive); color: var(--text-primary); font-weight: 500; }
+        #chat-list li .delete-chat-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.3em; /* Slightly larger */
+            line-height: 1; /* Prevent extra spacing */
+            cursor: pointer;
+            padding: 0 5px;
+            opacity: 0; /* Hidden by default */
+            transition: opacity var(--transition-speed), color var(--transition-speed);
+            margin-left: 8px; /* Space from text */
+            flex-shrink: 0;
+        }
+        #chat-list li:hover .delete-chat-btn { opacity: 0.7; }
+        #chat-list li .delete-chat-btn:hover { opacity: 1; color: var(--error-color); }
+        #chat-list li.active .delete-chat-btn { color: var(--text-primary); }
+
+        /* --- Chat Area --- */
+        .chat-header {
+            padding: var(--padding-medium) var(--padding-main);
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 1.1em;
+            color: var(--text-primary);
+        }
+        #current-chat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: var(--padding-main);
+            display: flex;
+            flex-direction: column;
+            gap: var(--padding-main);
+        }
+
+        .message {
+            display: flex;
+            max-width: 80%; /* Max width */
+            line-height: 1.6;
+            position: relative;
+        }
+        .message-bubble {
+            padding: var(--padding-small) var(--padding-medium);
+            border-radius: var(--border-radius-main);
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+             position: relative; /* For potential future elements like timestamps */
+        }
+        .message .sender {
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block; /* Take full width above content */
+            opacity: 0.8;
+        }
+        /* Add small avatar placeholder */
+         .message-avatar {
+             width: 32px;
+             height: 32px;
+             border-radius: 50%;
+             background-color: var(--bg-interactive); /* Placeholder */
+             margin-right: 12px;
+             flex-shrink: 0;
+             align-self: flex-start; /* Align avatar to top */
+             font-size: 0.7em;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-weight: bold;
+             color: var(--text-primary);
+         }
+
+        .user-message { align-self: flex-end; flex-direction: row-reverse; } /* Reverse order for user */
+        .user-message .message-avatar { background-color: var(--user-bubble); color: var(--user-text); margin-right: 0; margin-left: 12px; content: 'You';}
+        .user-message .message-bubble { background-color: var(--user-bubble); color: var(--user-text); border-bottom-right-radius: var(--border-radius-small); /* Stylish corner */ }
+        .user-message .sender { display: none; } /* Hide sender for user */
+
+
+        .ai-message { align-self: flex-start; }
+        .ai-message .message-avatar { background-color: var(--accent-color); content: 'AI';} /* Default AI avatar */
+        .ai-message .message-bubble { background-color: var(--ai-bubble); color: var(--ai-text); border-bottom-left-radius: var(--border-radius-small); }
+        .ai-message .sender { color: var(--accent-color); } /* AI name color */
+
+         /* System/Thought Message */
+         .system-thought-message { align-self: center; max-width: 85%; opacity: 0.8; font-size: 0.9em; }
+         .system-thought-message .message-avatar { background-color: var(--bg-interactive); color: var(--text-secondary); font-size: 0.6em; content: 'Sys'; }
+         .system-thought-message .message-bubble { background-color: var(--thought-bubble); color: var(--thought-text); font-style: italic; border-radius: var(--border-radius-small); padding: 8px 12px; }
+         .system-thought-message .sender { color: var(--text-secondary); font-weight: 500; }
+
+        /* Error Message */
+        .error-message { align-self: center; max-width: 85%; }
+        .error-message .message-avatar { background-color: var(--error-bg); color: var(--error-color); content: '!'; }
+        .error-message .message-bubble { background-color: var(--error-bg); color: var(--error-color); border: 1px solid var(--error-color); border-radius: var(--border-radius-small); }
+        .error-message .sender { color: var(--error-color); font-weight: 600; }
+
+        /* Markdown & KaTeX Styling in AI messages */
+        .ai-message .message-bubble pre,
+        .system-thought-message .message-bubble pre { /* Apply to thoughts too */
+            background-color: #1a1a1a;
+            padding: var(--padding-small);
+            border-radius: var(--border-radius-small);
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+        .ai-message .message-bubble code:not(pre code),
+        .system-thought-message .message-bubble code:not(pre code) {
+            background-color: var(--bg-interactive);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        .ai-message .message-bubble strong { font-weight: 600; }
+        .ai-message .message-bubble em { font-style: italic; }
+        .ai-message .message-bubble ul, .ai-message .message-bubble ol { margin: 10px 0 10px 25px; }
+        .ai-message .message-bubble li { margin-bottom: 5px; }
+        .ai-message .message-bubble blockquote {
+            border-left: 3px solid var(--accent-color);
+            padding-left: var(--padding-medium);
+            margin: 10px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        .ai-message .message-bubble a { color: var(--accent-color); text-decoration: none; }
+        .ai-message .message-bubble a:hover { text-decoration: underline; }
+        /* KaTeX specific */
+        .katex { font-size: 1.1em; /* Adjust KaTeX size */ }
+
+
+        .input-area {
+            padding: var(--padding-medium) var(--padding-main);
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: var(--padding-medium);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .action-buttons button {
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        .action-buttons button:hover {
+            background-color: var(--bg-interactive);
+            color: var(--text-primary);
+            border-color: var(--accent-glow);
+        }
+        .action-buttons button.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius-main);
+            padding: 8px;
+            border: 1px solid transparent; /* Placeholder for focus */
+             transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+         .input-wrapper:focus-within {
+             border-color: var(--accent-color);
+             box-shadow: 0 0 5px var(--accent-glow);
+         }
+
+
+        #message-input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: var(--border-radius-small);
+            border: none; /* Border handled by wrapper */
+            background-color: transparent; /* Use wrapper bg */
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 1em;
+            resize: none;
+            min-height: 44px;
+            max-height: 200px;
+            overflow-y: auto;
+            line-height: 1.5;
+             outline: none; /* Remove default outline */
+        }
+        #message-input::placeholder { color: var(--text-placeholder); }
+
+
+        #send-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-small);
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background-color var(--transition-speed), opacity var(--transition-speed);
+        }
+        #send-button:hover { background-color: var(--accent-hover); }
+        #send-button:disabled { background-color: var(--bg-interactive); cursor: not-allowed; opacity: 0.6; }
+        #send-button svg { width: 22px; height: 22px; fill: white; }
+
+        /* --- Utility & Loading --- */
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--padding-small) 0; /* Less vertical padding */
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.9em;
+             height: 30px; /* Give it fixed height to reduce layout shift */
+             transition: opacity var(--transition-speed);
+        }
+         .loading-indicator.visible { opacity: 1; }
+         .loading-indicator:not(.visible) { opacity: 0; }
+
+        .loading-spinner {
+             border: 3px solid var(--bg-interactive);
+             border-top: 3px solid var(--accent-color);
+             border-radius: 50%;
+             width: 18px;
+             height: 18px;
+             animation: spin 1s linear infinite;
+             margin-right: 10px;
+         }
+         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 768px) {
+            :root {
+                 --sidebar-width: var(--sidebar-width-collapsed);
+                 --padding-main: 15px;
+                 --padding-medium: 10px;
+            }
+            .sidebar { padding: var(--padding-medium) 10px; }
+            .sidebar-header h1,
+            #new-chat-btn span,
+            #chat-list li .chat-name {
+                opacity: 0; /* Hide text */
+                width: 0; /* Collapse width */
+                pointer-events: none; /* Prevent interaction with hidden text */
+            }
+             #new-chat-btn { justify-content: center; padding: 12px 0; }
+             #new-chat-btn svg { margin-right: 0; } /* Remove margin when text hidden */
+             #chat-list li { justify-content: center; padding: var(--padding-medium) 10px; }
+             #chat-list li .delete-chat-btn { margin-left: 0; opacity: 0.7; } /* Make delete visible */
+
+             .chat-header { padding: var(--padding-medium); font-size: 1em; min-height: 50px;}
+             .chat-messages { padding: var(--padding-medium); gap: var(--padding-medium); }
+             .message { max-width: 95%; } /* Allow slightly wider messages */
+              .message-avatar { width: 28px; height: 28px; margin-right: 8px;}
+              .user-message .message-avatar { margin-left: 8px; }
+
+             .input-area { padding: var(--padding-medium); }
+             .action-buttons { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
+             .input-wrapper { padding: 5px; }
+             #message-input { padding: 8px; min-height: 40px; }
+             #send-button { width: 40px; height: 40px; }
+             #send-button svg { width: 20px; height: 20px; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>Lenos<span class="ai-name">.ai</span></h1>
+                <!-- Toggle button could be added here later -->
+            </div>
+            <button id="new-chat-btn" title="New Chat">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z"></path></svg>
+                <span>New Chat</span>
+            </button>
+            <ul id="chat-list">
+                <!-- Chat list items -->
+            </ul>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <span id="current-chat-name">Welcome to Lenos.ai</span>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will appear here -->
+            </div>
+            <div class="loading-indicator" id="loading-indicator">
+                <div class="loading-spinner"></div>
+                <span id="loading-text">Thinking...</span>
+            </div>
+            <div class="input-area">
+                <div class="action-buttons">
+                    <button data-mode="deepthink" title="Engage both AIs in a deep, multi-step analysis">Deepthink</button>
+                    <button data-mode="deeperthink" title="A more rigorous and lengthy Deepthink process">Deeperthink</button>
+                    <button data-mode="article" title="Generate a long, structured article on the topic">Article</button>
+                    <button data-mode="brainstorm" title="Generate creative ideas from both AIs">Brainstorm</button>
+                    <button data-mode="random" title="Get a random interesting fact">Random</button>
+                </div>
+                <div class="input-wrapper">
+                    <textarea id="message-input" placeholder="Type your message or select a mode..." rows="1"></textarea>
+                    <button id="send-button" title="Send Message">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- API Configuration ---
+        // !!! IMPORTANT: Replace with your actual keys. DO NOT HARDCODE in production. Use a backend proxy. !!!
+        const GEMINI_API_KEY = "AIzaSyAGw-gCzOw8uDDb-Fk82jUzsj-j7fIZbq8"; // <--- PUT YOUR GEMINI KEY HERE
+        const MISTRAL_API_KEY = "Cu86Uk67cKXeG7Khlv6bum1ogeMWVMbW"; // <--- PUT YOUR MISTRAL KEY HERE
+
+        // Use Gemini 1.5 Flash - good balance of speed/capability
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+        const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
+        // Use Mistral Large - more capable for complex tasks
+        const MISTRAL_MODEL = 'mistral-large-latest';
+
+        // --- DOM Elements ---
+        const sidebar = document.getElementById('sidebar');
+        const chatListEl = document.getElementById('chat-list');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const chatMessagesEl = document.getElementById('chat-messages');
+        const messageInputEl = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const actionButtonsContainer = document.querySelector('.action-buttons');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const loadingText = document.getElementById('loading-text');
+        const currentChatNameEl = document.getElementById('current-chat-name');
+
+        // --- State ---
+        let chats = {}; // { id: { id: '...', name: '...', messages: [{role, parts: [{text}]}] } }
+        let currentChatId = null;
+        let activeMode = 'normal';
+        let isSending = false;
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChats();
+            setupEventListeners();
+            autoResizeTextarea();
+            updateSendButtonState();
+            renderChatList(); // Initial render
+
+            const lastActiveId = localStorage.getItem('lenosAi_lastActive');
+            if (lastActiveId && chats[lastActiveId]) {
+                switchChat(lastActiveId);
+            } else if (Object.keys(chats).length > 0) {
+                // Load the most recently created chat if no last active found
+                const sortedIds = Object.keys(chats).sort((a, b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
+                switchChat(sortedIds[0]);
+            } else {
+                // Create a default chat if none exist
+                 createNewChat(false); // Don't switch yet, let the header show default
+                 currentChatNameEl.textContent = "Start a new chat";
+            }
+
+             // Initial render Math in case there are saved messages with LaTeX
+             renderMathInElement(chatMessagesEl, katexOptions());
+        });
+
+        // --- Event Listeners ---
+        function setupEventListeners() {
+            newChatBtn.addEventListener('click', () => createNewChat());
+            sendButton.addEventListener('click', handleSendMessage);
+            messageInputEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            });
+            messageInputEl.addEventListener('input', autoResizeTextarea);
+            messageInputEl.addEventListener('input', updateSendButtonState);
+
+            actionButtonsContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON' && e.target.dataset.mode) {
+                    const selectedMode = e.target.dataset.mode;
+                     // Toggle behavior: If clicking the active button, deactivate it
+                     if (e.target.classList.contains('active')) {
+                         activeMode = 'normal';
+                         setActiveButton('normal'); // Visually deselect
+                     } else {
+                         activeMode = selectedMode;
+                         setActiveButton(selectedMode); // Visually select
+                     }
+                    updateSendButtonState(); // Re-evaluate send button
+
+                    if (selectedMode === 'random' && messageInputEl.value.trim() === '' && activeMode === 'random') {
+                         handleSendMessage(); // Trigger immediately if random is activated and input empty
+                    } else if (activeMode !== 'normal') {
+                        messageInputEl.focus();
+                    }
+                }
+            });
+
+            chatListEl.addEventListener('click', (e) => {
+                 const listItem = e.target.closest('li[data-chat-id]');
+                 if (!listItem) return;
+                 const chatId = listItem.dataset.chatId;
+
+                 if (e.target.classList.contains('delete-chat-btn')) {
+                     e.stopPropagation();
+                     deleteChat(chatId);
+                 } else if (chatId && chatId !== currentChatId) {
+                     switchChat(chatId);
+                 }
+             });
+        }
+
+        // --- Core Chat Functions ---
+        async function handleSendMessage() {
+            if (isSending) return;
+
+            const userInput = messageInputEl.value.trim();
+            const modeToSend = activeMode;
+
+             // Require input for most modes, except Random when triggered automatically
+            if (userInput === '' && modeToSend !== 'random') {
+                 // Optional: Flash input border red?
+                 console.log("Input required for mode:", modeToSend);
+                 return;
+            }
+
+            // Ensure a chat exists
+             if (!currentChatId) {
+                 console.log("No active chat. Creating one.");
+                 if (!createNewChat(true)) return; // Create and switch, exit if creation failed
+             }
+
+
+            isSending = true;
+            setLoading(true, "Processing..."); // Initial loading state
+            sendButton.disabled = true;
+            const currentHistory = getChatHistory(currentChatId); // Get persistent history
+
+            // Reset mode to normal AFTER capturing it, unless it was random auto-triggered
+            if (activeMode !== 'normal') {
+                 activeMode = 'normal';
+                 setActiveButton('normal');
+            }
+
+            // Display user message (only if there's actual input)
+            if (userInput !== '') {
+                 addUserMessage(userInput); // Saves automatically
+                 messageInputEl.value = '';
+                 autoResizeTextarea();
+            } else if (modeToSend === 'random') {
+                 // Display a placeholder for random request if input was empty
+                 addUserMessage("[Requesting random fact...]", false); // Don't save placeholder
+            }
+             updateSendButtonState(); // Disable send button immediately
+
+
+            try {
+                let finalAiResponseText = null; // Store the final answer to be saved
+
+                switch (modeToSend) {
+                    case 'deepthink':
+                    case 'deeperthink':
+                        const intensity = modeToSend === 'deeperthink' ? 'extremely rigorous and detailed' : 'thorough and multi-faceted';
+                        const correctionLevel = modeToSend === 'deeperthink' ? 'Critically evaluate and correct any inaccuracies or weak points identified.' : 'Refine and improve upon the initial points.';
+
+                        const basePrompt = userInput || "the provided context"; // Use context if input is empty
+
+                        // 1. Initial Analysis (Gemini)
+                        setLoading(true, "Gemini Analyzing...");
+                        const geminiPrompt = `Provide a ${intensity} initial analysis of the following topic: ${basePrompt}. Focus on key concepts, potential angles, and initial thoughts.`;
+                        const geminiThoughts = await callGeminiAPI(geminiPrompt, currentHistory);
+                        addSystemThoughtMessage(geminiThoughts, "Gemini (Initial Thoughts)");
+
+                        // 2. Refinement & Synthesis (Mistral)
+                        setLoading(true, "Mistral Refining...");
+                        const mistralPrompt = `Based on the initial analysis below, provide a comprehensive and synthesized final response. Aim for a cohesive, well-structured answer. ${correctionLevel}\n\nTopic: ${basePrompt}\n\nInitial Analysis (by Gemini):\n${geminiThoughts}\n\nRefined & Synthesized Response (by Mistral):`;
+                        // Send history *plus* Gemini's thought process *temporarily* for context
+                        const historyForMistral = [
+                            ...currentHistory,
+                            // Represent Gemini's thought as a previous turn for Mistral's context
+                            { role: 'model', parts: [{ text: `Initial Analysis:\n${geminiThoughts}` }] }
+                        ];
+                        finalAiResponseText = await callMistralAPI(mistralPrompt, historyForMistral, true);
+                         setLoading(true, "Consolidating Answer...");
+                         addAiMessage(finalAiResponseText, "Lenos.ai (Synthesized)"); // Final answer saved here
+                         break;
+
+                    case 'article':
+                        setLoading(true, "Generating Article Outline (Gemini)...");
+                        const articleTopic = userInput || "the topic from the current context";
+                        const outlinePrompt = `Create a detailed, section-by-section outline for a comprehensive and very long article about: ${articleTopic}.`;
+                        const articleOutline = await callGeminiAPI(outlinePrompt, currentHistory);
+                        addSystemThoughtMessage(`**Article Outline:**\n${articleOutline}`, "Gemini (Outline)");
+
+                        setLoading(true, "Writing Article (Mistral)...");
+                        const articlePrompt = `Write a comprehensive, well-structured, and very long article based on the following outline and topic. Expand significantly on each point. \n\nTopic: ${articleTopic}\n\nOutline:\n${articleOutline}\n\nFull Article:`;
+                        const historyForArticle = [...currentHistory, { role: 'model', parts: [{ text: `Outline:\n${articleOutline}` }] }];
+                        finalAiResponseText = await callMistralAPI(articlePrompt, historyForArticle, true, 3000); // Request more tokens
+                        addAiMessage(finalAiResponseText, "Lenos.ai (Article)");
+                        break;
+
+                    case 'brainstorm':
+                        setLoading(true, "Brainstorming (Gemini)...");
+                        const brainstormTopic = userInput || "ideas based on the current conversation context";
+                        const brainstormPrompt = `Brainstorm a diverse list of creative, innovative, and potentially unconventional ideas related to: ${brainstormTopic}. Provide at least 10 distinct ideas.`;
+
+                        const geminiIdeas = await callGeminiAPI(brainstormPrompt, currentHistory);
+                        addSystemThoughtMessage(`**Gemini's Ideas:**\n${geminiIdeas}`, "Gemini (Brainstorm)");
+
+                        setLoading(true, "Brainstorming (Mistral)...");
+                        // Ask Mistral to add DIFFERENT ideas
+                        const mistralBrainstormPrompt = `Building on the topic "${brainstormTopic}", brainstorm a list of *additional* creative and diverse ideas, distinct from common suggestions. Aim for novelty.`;
+                         // Send Gemini's ideas too so Mistral avoids duplicates (hopefully)
+                         const historyForMistralStorm = [...currentHistory, { role: 'model', parts: [{ text: `Initial Ideas:\n${geminiIdeas}` }] }];
+                        const mistralIdeas = await callMistralAPI(mistralBrainstormPrompt, historyForMistralStorm, true);
+                        addSystemThoughtMessage(`**Mistral's Ideas:**\n${mistralIdeas}`, "Mistral (Brainstorm)");
+
+                        // Combine and present - save the combined list as the final answer
+                        finalAiResponseText = `**Combined Brainstorming Results:**\n\n**From Gemini:**\n${geminiIdeas}\n\n**From Mistral:**\n${mistralIdeas}`;
+                         addAiMessage(finalAiResponseText, "Lenos.ai (Brainstorm)");
+                         break;
+
+                    case 'random':
+                         setLoading(true, "Fetching Random Fact...");
+                         const randomPrompt = "Tell me a short, interesting, fascinating, and random fact. Make it concise.";
+                         // Use Gemini for this simple task
+                         finalAiResponseText = await callGeminiAPI(randomPrompt, []); // No history needed
+                         addAiMessage(finalAiResponseText, "Lenos.ai (Fact Bot)");
+                         break;
+
+                    case 'normal':
+                    default:
+                        setLoading(true, "Lenos.ai Responding...");
+                         const normalTopic = userInput || "Continue the conversation based on the context.";
+                         // Default to Mistral for general chat
+                         finalAiResponseText = await callMistralAPI(normalTopic, currentHistory, true);
+                         addAiMessage(finalAiResponseText); // Default sender Lenos.ai
+                         break;
+                 }
+
+             } catch (error) {
+                 console.error("Error during API interaction:", error);
+                 addErrorMessage(`Oops! Something went wrong: ${error.message || 'Failed to get response.'}`);
+             } finally {
+                 isSending = false;
+                 setLoading(false); // Hide loading indicator
+                 updateSendButtonState(); // Re-evaluate based on input state
+                 scrollToBottom();
+                 // Ensure active mode is visually reset if it wasn't already
+                 if (activeMode !== 'normal') {
+                    activeMode = 'normal';
+                    setActiveButton('normal');
+                 }
+             }
+        }
+
+        function addUserMessage(text, save = true) {
+             displayMessage('User', text, 'user', 'You');
+             if (save && currentChatId && chats[currentChatId]) {
+                 // Ensure messages array exists
+                 if (!chats[currentChatId].messages) {
+                     chats[currentChatId].messages = [];
+                 }
+                 chats[currentChatId].messages.push({ role: 'user', parts: [{ text }] });
+                 saveChats(); // Save after adding message
+             }
+         }
+
+         // Adds the *final* AI response to the display and persistent history
+         function addAiMessage(text, sender = 'Lenos.ai') {
+             displayMessage(sender, text, 'ai', 'AI'); // Use 'AI' for avatar placeholder
+             if (currentChatId && chats[currentChatId]) {
+                 if (!chats[currentChatId].messages) {
+                     chats[currentChatId].messages = [];
+                 }
+                 // Store final AI response using 'model' role for consistency with Gemini/Mistral expectations
+                 chats[currentChatId].messages.push({ role: 'model', parts: [{ text }] });
+                 saveChats(); // Save after adding message
+             }
+         }
+
+         // Adds intermediate "thoughts" or system messages to the display ONLY
+         // These are NOT added to the persistent chat history sent to APIs
+         function addSystemThoughtMessage(text, sender = 'System') {
+             displayMessage(sender, text, 'system-thought', 'Sys');
+         }
+
+         // Adds error messages to the display ONLY
+         function addErrorMessage(text) {
+             displayMessage('Error', text, 'error', '!');
+         }
+
+        function displayMessage(sender, text, type, avatarText) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('message', `${type}-message`);
+
+            const avatarEl = document.createElement('div');
+            avatarEl.classList.add('message-avatar');
+            avatarEl.textContent = avatarText; // Display initials or symbol
+
+            const bubbleEl = document.createElement('div');
+            bubbleEl.classList.add('message-bubble');
+
+             const senderEl = document.createElement('span');
+             senderEl.classList.add('sender');
+             senderEl.textContent = sender;
+
+             const contentEl = document.createElement('div');
+             contentEl.classList.add('message-content');
+
+            // Process for AI/System messages (Markdown + LaTeX)
+            if (type === 'ai' || type === 'system-thought') {
+                 contentEl.innerHTML = simpleMarkdown(text); // Basic markdown first
+                 // KaTeX rendering will be triggered after appending to DOM
+            } else {
+                 contentEl.textContent = text; // User/Error text is plain
+            }
+
+             bubbleEl.appendChild(senderEl);
+             bubbleEl.appendChild(contentEl);
+
+            messageWrapper.appendChild(avatarEl);
+            messageWrapper.appendChild(bubbleEl);
+
+            chatMessagesEl.appendChild(messageWrapper);
+
+            // Render math for the newly added message if it's AI/System
+            if ((type === 'ai' || type === 'system-thought')) {
+                try {
+                    renderMathInElement(contentEl, katexOptions());
+                } catch (error) {
+                    console.error("KaTeX rendering error:", error);
+                    // Optionally display a small error note near the math part
+                }
+            }
+
+            scrollToBottom(); // Scroll after adding
+        }
+
+
+        // --- API Call Functions ---
+        function formatHistoryForGemini(messages) {
+            const validRoles = ['user', 'model'];
+            let lastRole = null;
+            const formatted = [];
+            // Gemini prefers strict user/model alternation.
+            // Combine consecutive messages of the same role IF NECESSARY, but better to filter.
+            messages.filter(msg => validRoles.includes(msg.role) && msg.parts?.[0]?.text?.trim())
+                     .forEach(msg => {
+                         if (msg.role !== lastRole) {
+                             formatted.push({
+                                 role: msg.role,
+                                 parts: msg.parts.map(part => ({ text: part.text }))
+                             });
+                             lastRole = msg.role;
+                         } else {
+                              // If last message was same role, append to its content.
+                              // This might slightly alter conversational flow perception for the AI.
+                              const lastMsg = formatted[formatted.length - 1];
+                              if(lastMsg && lastMsg.parts[0]) {
+                                   lastMsg.parts[0].text += "\n\n" + msg.parts[0].text;
+                              }
+                              console.warn("Combining consecutive Gemini messages of role:", msg.role);
+                         }
+                     });
+            // Ensure history doesn't start with 'model' if possible
+            if (formatted.length > 0 && formatted[0].role === 'model') {
+                // console.warn("Gemini history starts with model, might cause issues.");
+                // Optionally prepend a dummy user message, but usually the main prompt handles this.
+            }
+             return formatted;
+        }
+
+        function formatHistoryForMistral(messages) {
+            const roleMapping = { 'user': 'user', 'model': 'assistant' };
+            const validRoles = ['user', 'model'];
+            let lastRole = null;
+             const formatted = [];
+             messages.filter(msg => validRoles.includes(msg.role) && msg.parts?.[0]?.text?.trim())
+                      .forEach(msg => {
+                          const mappedRole = roleMapping[msg.role];
+                          if (mappedRole && mappedRole !== lastRole) {
+                              formatted.push({
+                                  role: mappedRole,
+                                  content: msg.parts[0].text
+                              });
+                              lastRole = mappedRole;
+                          } else if (mappedRole && mappedRole === lastRole) {
+                               const lastMsg = formatted[formatted.length - 1];
+                               if (lastMsg) {
+                                   lastMsg.content += "\n\n" + msg.parts[0].text;
+                               }
+                               console.warn("Combining consecutive Mistral messages of role:", mappedRole);
+                          }
+                      });
+             return formatted;
+         }
+
+         async function callGeminiAPI(prompt, history = []) {
+             if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+                 throw new Error("Gemini API Key not configured in the code.");
+             }
+             const formattedHistory = formatHistoryForGemini(history);
+             const contents = [...formattedHistory, { role: 'user', parts: [{ text: prompt }] }];
+
+             const response = await fetch(GEMINI_API_URL, {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({ contents: contents })
+             });
+
+             const data = await response.json();
+
+             if (!response.ok) {
+                 console.error("Gemini API Error Response:", data);
+                 throw new Error(`Gemini API Error (${response.status}): ${data.error?.message || 'Unknown error'}`);
+             }
+             if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                 return data.candidates[0].content.parts[0].text;
+             } else if (data.promptFeedback?.blockReason) {
+                  console.warn("Gemini Response Blocked:", data.promptFeedback);
+                 return `Response blocked by safety settings: ${data.promptFeedback.blockReason}`;
+             } else {
+                 console.error("Unexpected Gemini API response:", data);
+                 throw new Error("Received an empty or unexpected response from Gemini.");
+             }
+         }
+
+         async function callMistralAPI(prompt, history = [], useChatFormat = true, maxTokens = 2000) {
+             if (!MISTRAL_API_KEY || MISTRAL_API_KEY === "YOUR_MISTRAL_API_KEY") {
+                 throw new Error("Mistral API Key not configured in the code.");
+             }
+             const formattedHistory = formatHistoryForMistral(history);
+             const requestBody = {
+                 model: MISTRAL_MODEL,
+                 messages: [...formattedHistory, { role: 'user', content: prompt }],
+                 max_tokens: maxTokens,
+                 // temperature: 0.7, // Optional tuning
+                 // safe_prompt: true // Optional
+             };
+
+             const response = await fetch(MISTRAL_API_URL, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                     'Accept': 'application/json',
+                     'Authorization': `Bearer ${MISTRAL_API_KEY}`
+                 },
+                 body: JSON.stringify(requestBody)
+             });
+
+             const data = await response.json();
+
+             if (!response.ok) {
+                 console.error("Mistral API Error Response:", data);
+                 throw new Error(`Mistral API Error (${response.status}): ${data.message || JSON.stringify(data)}`);
+             }
+             if (data.choices?.[0]?.message?.content) {
+                 return data.choices[0].message.content;
+             } else {
+                 console.error("Unexpected Mistral API response:", data);
+                 throw new Error("Received an empty or unexpected response from Mistral.");
+             }
+         }
+
+
+        // --- Chat Management (LocalStorage) ---
+        const STORAGE_KEY = 'lenosAi_chats';
+        const LAST_ACTIVE_KEY = 'lenosAi_lastActive';
+
+        function saveChats() {
+            try {
+                // Prune excessively long histories maybe? (Optional)
+                // const MAX_MESSAGES_PER_CHAT = 100;
+                // Object.values(chats).forEach(chat => {
+                //   if (chat.messages.length > MAX_MESSAGES_PER_CHAT) {
+                //     chat.messages = chat.messages.slice(chat.messages.length - MAX_MESSAGES_PER_CHAT);
+                //   }
+                // });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
+                 if (currentChatId) {
+                    localStorage.setItem(LAST_ACTIVE_KEY, currentChatId);
+                 }
+            } catch (e) {
+                console.error("Error saving chats to local storage:", e);
+                addErrorMessage("Warning: Could not save chat data. Storage might be full or disabled.");
+            }
+        }
+
+        function loadChats() {
+             const savedChats = localStorage.getItem(STORAGE_KEY);
+             if (savedChats) {
+                 try {
+                     chats = JSON.parse(savedChats);
+                     // Validate loaded data basic structure
+                     if (typeof chats !== 'object' || chats === null) throw new Error("Invalid data type");
+
+                     Object.keys(chats).forEach(id => {
+                         const chat = chats[id];
+                         if (!chat || typeof chat.name !== 'string' || !Array.isArray(chat.messages) || typeof chat.id !== 'string') {
+                              console.warn(`Invalid structure for chat ID ${id}. Removing.`);
+                              delete chats[id];
+                         } else {
+                            // Ensure messages have correct structure
+                            chat.messages = chat.messages.map(msg => ({
+                                 role: msg.role || (msg.isUser ? 'user' : 'model'), // Migrate legacy format if needed
+                                 parts: Array.isArray(msg.parts) && msg.parts.length > 0 ? msg.parts : [{ text: msg.text || msg.content || '' }]
+                             })).filter(msg => msg.parts[0].text); // Filter out empty messages
+                         }
+                     });
+
+                 } catch (e) {
+                     console.error("Error parsing chats from local storage:", e);
+                     chats = {};
+                     localStorage.removeItem(STORAGE_KEY); // Clear corrupted data
+                     localStorage.removeItem(LAST_ACTIVE_KEY);
+                     addErrorMessage("Error loading previous chats. Storage cleared.");
+                 }
+             } else {
+                 chats = {};
+             }
+             // No initial rendering here, happens in DOMContentLoaded
+         }
+
+        function createNewChat(switchImmediately = true) {
+            const newChatId = `chat_${Date.now()}`;
+            const defaultName = `Chat ${Object.keys(chats).length + 1}`;
+            // Consider an inline editing mechanism later instead of prompt
+            const chatNameInput = prompt("Enter name for the new chat:", defaultName);
+
+            if (chatNameInput === null) return false; // User cancelled
+
+            const chatName = chatNameInput.trim() || defaultName;
+
+            chats[newChatId] = { id: newChatId, name: chatName, messages: [] };
+            saveChats(); // Save immediately
+            renderChatList(); // Update UI
+
+            if (switchImmediately) {
+                switchChat(newChatId);
+            }
+             return true; // Indicate success
+        }
+
+        function deleteChat(chatId) {
+            if (!chats[chatId]) return;
+
+            if (!confirm(`Delete chat "${chats[chatId].name}"? This cannot be undone.`)) {
+                return;
+            }
+
+            const chatWasActive = (currentChatId === chatId);
+             const chatIdsBeforeDelete = Object.keys(chats).sort((a, b) => parseInt(a.split('_')[1]) - parseInt(b.split('_')[1])); // Sorted old to new
+             const indexToDelete = chatIdsBeforeDelete.indexOf(chatId);
+
+             delete chats[chatId];
+            saveChats(); // Save deletion
+            renderChatList(); // Update sidebar UI
+
+            if (chatWasActive) {
+                 localStorage.removeItem(LAST_ACTIVE_KEY);
+                currentChatId = null;
+                clearChatDisplay();
+                currentChatNameEl.textContent = "Select or Create a Chat";
+
+                 const remainingChatIds = Object.keys(chats).sort((a, b) => parseInt(a.split('_')[1]) - parseInt(b.split('_')[1])); // Sorted remaining
+                 if (remainingChatIds.length > 0) {
+                     // Try to select the next chat in the original order, or the previous one, or the new last one
+                     let nextChatIndex = -1;
+                     if (indexToDelete < chatIdsBeforeDelete.length - 1 && remainingChatIds.includes(chatIdsBeforeDelete[indexToDelete + 1])) {
+                         nextChatIndex = remainingChatIds.indexOf(chatIdsBeforeDelete[indexToDelete + 1]);
+                     } else if (indexToDelete > 0 && remainingChatIds.includes(chatIdsBeforeDelete[indexToDelete - 1])) {
+                          nextChatIndex = remainingChatIds.indexOf(chatIdsBeforeDelete[indexToDelete - 1]);
+                     } else {
+                         nextChatIndex = remainingChatIds.length - 1; // Select the last remaining chat
+                     }
+                      if(nextChatIndex !== -1) {
+                           switchChat(remainingChatIds[nextChatIndex]);
+                      }
+                 } else {
+                    // No chats left, create a new default one
+                    createNewChat(true);
+                }
+            }
+        }
+
+        function switchChat(chatId) {
+            if (!chats[chatId]) {
+                console.error("Attempted to switch to non-existent chat:", chatId);
+                // Try switching to the first available chat instead
+                 const firstChatId = Object.keys(chats)[0];
+                 if (firstChatId) {
+                     switchChat(firstChatId);
+                 } else {
+                    // No chats exist at all, maybe prompt to create one?
+                    currentChatNameEl.textContent = "Create a chat to start";
+                     clearChatDisplay();
+                 }
+                return;
+            }
+
+            currentChatId = chatId;
+            localStorage.setItem(LAST_ACTIVE_KEY, chatId); // Store last active
+            clearChatDisplay();
+             if(chats[chatId].messages) { // Check if messages array exists
+                renderChatMessages(chats[chatId].messages);
+             } else {
+                 chats[chatId].messages = []; // Initialize if missing
+             }
+            renderChatList(); // Update active state in list
+            currentChatNameEl.textContent = chats[chatId].name;
+            messageInputEl.focus();
+            activeMode = 'normal';
+            setActiveButton('normal');
+            updateSendButtonState();
+        }
+
+        function getChatHistory(chatId) {
+             // Return a copy to prevent accidental modification of the source
+             return chats[chatId]?.messages ? JSON.parse(JSON.stringify(chats[chatId].messages)) : [];
+         }
+
+
+        // --- Rendering Functions ---
+        function renderChatList() {
+            chatListEl.innerHTML = '';
+            const chatIds = Object.keys(chats);
+            // Sort newest first for display
+             chatIds.sort((a, b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
+
+            chatIds.forEach(id => {
+                const chat = chats[id];
+                 if(!chat) return; // Skip if somehow null/undefined after validation
+                const listItem = document.createElement('li');
+                listItem.dataset.chatId = id;
+                listItem.title = chat.name;
+
+                 const nameSpan = document.createElement('span');
+                 nameSpan.classList.add('chat-name');
+                 nameSpan.textContent = chat.name;
+                 listItem.appendChild(nameSpan);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-chat-btn');
+                deleteBtn.innerHTML = '×';
+                deleteBtn.title = 'Delete Chat';
+                 listItem.appendChild(deleteBtn);
+
+                if (id === currentChatId) {
+                    listItem.classList.add('active');
+                }
+                chatListEl.appendChild(listItem);
+            });
+        }
+
+         function renderChatMessages(messages) {
+            messages.forEach(msg => {
+                // Determine type and sender based on role
+                let type = 'ai'; // Default
+                let sender = 'Lenos.ai';
+                 let avatar = 'AI';
+                if (msg.role === 'user') {
+                    type = 'user';
+                    sender = 'User';
+                     avatar = 'You';
+                 }
+                // Add handling for other roles if needed later (e.g., tool)
+
+                 displayMessage(sender, msg.parts[0].text, type, avatar);
+             });
+             // Trigger KaTeX rendering for the whole message area after loading
+              try {
+                   renderMathInElement(chatMessagesEl, katexOptions());
+              } catch (error) {
+                  console.error("KaTeX render error on load:", error);
+              }
+             scrollToBottom();
+         }
+
+        function clearChatDisplay() {
+            chatMessagesEl.innerHTML = '';
+        }
+
+        // --- Utility Functions ---
+        function scrollToBottom() {
+            // Use setTimeout to ensure DOM update before scrolling
+             setTimeout(() => {
+                 chatMessagesEl.scrollTo({ top: chatMessagesEl.scrollHeight, behavior: 'smooth' });
+             }, 50); // Small delay might help render first
+         }
+
+         function setLoading(isLoading, message = "Thinking...") {
+             if (isLoading) {
+                 loadingIndicator.classList.add('visible');
+                 loadingText.textContent = message;
+             } else {
+                 loadingIndicator.classList.remove('visible');
+             }
+         }
+
+        function autoResizeTextarea() {
+            messageInputEl.style.height = 'auto';
+            const maxHeight = parseInt(window.getComputedStyle(messageInputEl).maxHeight);
+            const newHeight = Math.min(messageInputEl.scrollHeight, maxHeight);
+            messageInputEl.style.height = `${newHeight}px`;
+             // Adjust send button alignment (though flex-end should handle it)
+             // sendButton.style.height = `${Math.max(44, newHeight)}px`; // Ensure button matches height? Might look odd.
+        }
+
+        function updateSendButtonState() {
+            const hasText = messageInputEl.value.trim() !== '';
+            const canSend = hasText || (activeMode === 'random'); // Can send random without text
+            sendButton.disabled = isSending || !canSend;
+        }
+
+        function setActiveButton(mode) {
+            actionButtonsContainer.querySelectorAll('button').forEach(btn => {
+                if (btn.dataset.mode === mode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Basic Markdown (Focus on common elements, less comprehensive than a library)
+         function simpleMarkdown(text) {
+             if (!text) return '';
+             let html = text;
+
+             // 1. Escape HTML characters to prevent XSS
+             const escapeHtml = (unsafe) => {
+                 return unsafe
+                     .replace(/&/g, "&")
+                     .replace(/</g, "<")
+                     .replace(/>/g, ">")
+                     .replace(/"/g, '\\"')
+                     .replace(/'/g, "'");
+             };
+             // Apply selectively later if needed, KaTeX might need raw chars
+
+             // 2. Code blocks (```lang\ncode``` or ```\ncode```) - Preserve content for syntax highlighters if added later
+             html = html.replace(/```(\w+)?\s*\n([\s\S]*?)```/gs, (match, lang, code) => {
+                const languageClass = lang ? ` class="language-${escapeHtml(lang)}"` : '';
+                 // Need to escape HTML *inside* the code block *after* identifying it
+                 return `<pre><code${languageClass}>${escapeHtml(code.trim())}</code></pre>`;
+              });
+
+             // 3. Inline code (`code`)
+             html = html.replace(/`([^`\n]+?)`/g, (match, code) => `<code>${escapeHtml(code)}</code>`);
+
+             // 4. Bold (**text**)
+             html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+             // 5. Italic (*text*)
+             html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+             // --- Structure Elements (Needs careful newline handling) ---
+
+             // 6. Blockquotes (> text) - Handle multi-line
+             html = html.replace(/^> (.*?)(\n|$)/gm, '<blockquote>$1</blockquote>\n'); // Use > if initial escape ran
+             html = html.replace(/^> (.*?)(\n|$)/gm, '<blockquote>$1</blockquote>\n'); // Handle > if no initial escape
+             html = html.replace(/<\/blockquote>\n<blockquote>/g, '<br>'); // Combine adjacent lines
+
+             // 7. Unordered lists (* or - item) - Handle simple lists
+             html = html.replace(/^[\*\-]\s+(.*?)(?=\n(?:$|[^*-]))/gm, (match, item) => `<ul><li>${item.trim()}</li></ul>`);
+             html = html.replace(/<\/ul>\n?<ul>/g, ''); // Merge adjacent lists
+
+             // 8. Ordered lists (1. item) - Handle simple lists
+             html = html.replace(/^\d+\.\s+(.*?)(?=\n(?:$|(?!\d+\.)))/gm, (match, item) => `<ol><li>${item.trim()}</li></ol>`);
+             html = html.replace(/<\/ol>\n?<ol>/g, ''); // Merge adjacent lists
+
+              // 9. Basic Links [text](url) - Simplified
+              html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+             // 10. Convert remaining newlines to <br> (outside of pre/code/list items etc.) - This is tricky!
+             // A simpler approach: Convert double newlines to paragraphs first?
+             // Or just convert single newlines *after* block elements are done?
+             html = html.split('\n').map(line => {
+                  // Avoid adding <br> inside tags or after block elements
+                  if (line.match(/^\s*<(?:pre|code|ul|ol|li|blockquote|h[1-6])/i) || line.match(/<\/(?:pre|code|ul|ol|li|blockquote|h[1-6])>\s*$/i) || line.trim() === '') {
+                       return line;
+                  }
+                  // Very basic check, won't handle complex cases well.
+                  return line + '<br>';
+             }).join('\n');
+             html = html.replace(/<br>\s*<br>/g, '<br>'); // Clean up excess breaks
+              html = html.replace(/<br>\s*<\/(ul|ol|li|blockquote)>/g, '</$1>'); // Remove breaks before closing tags
+
+             return html;
+        }
+
+         // KaTeX options (ensure delimiters match your usage)
+         function katexOptions() {
+            return {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ],
+                throwOnError: false // Don't break page on bad LaTeX
+            };
+        }
+
+    </script>
+</body>
+</html>
