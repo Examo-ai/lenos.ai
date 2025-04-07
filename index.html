@@ -2,8 +2,8 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lenos.ai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lenos.ai Advanced</title>
     <!-- KaTeX für LaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1tBCETigGWipszzSo+AUXLy2eVvx" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmImKTgiLR" crossorigin="anonymous"></script>
@@ -11,256 +11,450 @@
     <!-- Google Fonts (Poppins) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons (Material Icons) -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
     <style>
         :root {
-            --bg-primary: #0f0f0f;
-            --bg-secondary: #1a1a1a;
-            --bg-tertiary: #252525;
-            --bg-interactive: #303030;
-            --text-primary: #f0f0f0;
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1F1F1F;
+            --bg-interactive: #2a2a2a;
+            --bg-input: #181818; /* Slightly different input background */
+            --text-primary: #f5f5f5;
             --text-secondary: #b0b0b0;
-            --text-placeholder: #888888;
-            --accent-color: #0ea5e9; /* Sky Blue */
+            --text-placeholder: #777777;
+            --accent-color: #0ea5e9;
             --accent-hover: #0284c7;
-            --accent-glow: rgba(14, 165, 233, 0.3);
+            --accent-glow: rgba(14, 165, 233, 0.4);
             --error-color: #f43f5e;
             --error-bg: rgba(244, 63, 94, 0.1);
             --user-bubble: linear-gradient(135deg, #059669, #047857);
             --user-text: #ffffff;
             --ai-bubble: var(--bg-tertiary);
             --ai-text: var(--text-primary);
-            --thought-bubble: #1f1f1f;
-            --thought-text: var(--text-secondary);
-            --border-color: #383838;
+            --thought-bubble: #222222;
+            --thought-text: #a0a0a0;
+            --border-color: #303030;
             --font-main: 'Poppins', sans-serif;
-            --border-radius-main: 16px;
-            --border-radius-medium: 12px;
-            --border-radius-small: 8px;
+            --border-radius-main: 18px;
+            --border-radius-medium: 14px;
+            --border-radius-small: 10px;
             --padding-main: 24px;
             --padding-medium: 16px;
             --padding-small: 12px;
-            --sidebar-width: 280px;
-            --header-height: 65px;
-            --input-padding-bottom: 24px;
+            --sidebar-width: 290px;
+            --header-height: 70px;
+            --input-area-padding-bottom: 20px; /* Reduced slightly */
+            --input-wrapper-height: 54px; /* Base height for input wrapper */
             --transition-speed: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 5px 10px rgba(0, 0, 0, 0.2);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: var(--bg-interactive) var(--bg-secondary); }
+        /* --- Base & Scrollbar --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: thin; scrollbar-color: var(--bg-interactive) var(--bg-secondary); -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background-color: var(--bg-interactive); border-radius: 4px; border: 2px solid var(--bg-secondary); }
         ::-webkit-scrollbar-thumb:hover { background-color: #444; }
-
         html, body { height: 100%; font-family: var(--font-main); background-color: var(--bg-primary); color: var(--text-primary); overflow: hidden; font-size: 16px; line-height: 1.6; }
-
         .app-container { display: flex; height: 100vh; }
 
-        /* --- Sidebar --- */
-        .sidebar {
-            width: var(--sidebar-width); background: linear-gradient(180deg, var(--bg-secondary) 0%, #151515 100%);
-            padding: var(--padding-medium); display: flex; flex-direction: column;
-            border-right: 1px solid var(--border-color); flex-shrink: 0;
-            transition: transform var(--transition-speed); position: fixed;
-            left: 0; top: 0; height: 100%; z-index: 100;
-            transform: translateX(0); /* Standard: sichtbar (Desktop) */
-        }
-        .sidebar.collapsed { /* Zustand für mobile Ansicht (versteckt) */
-            transform: translateX(calc(-1 * var(--sidebar-width)));
-        }
-
+        /* --- Sidebar (unchanged from previous version) --- */
+        .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, var(--bg-secondary) 0%, #101010 100%); padding: var(--padding-medium); display: flex; flex-direction: column; border-right: 1px solid var(--border-color); flex-shrink: 0; transition: transform var(--transition-speed); position: fixed; left: 0; top: 0; height: 100%; z-index: 100; transform: translateX(calc(-1 * var(--sidebar-width))); }
+        .sidebar.visible { transform: translateX(0); }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; min-height: 45px; padding: 0 var(--padding-small); }
-        .sidebar-header h1 { font-size: 1.5em; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; }
+        .sidebar-header h1 { font-size: 1.6em; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; }
         .sidebar-header h1 .ai-name { color: var(--accent-color); }
-        .sidebar-internal-toggle { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 8px; display: none; /* Nur mobil relevant */ transition: color var(--transition-speed); }
-        .sidebar-internal-toggle svg { width: 24px; height: 24px; display: block; }
-        .sidebar-internal-toggle:hover { color: var(--text-primary); }
-
-        #new-chat-btn { display: flex; align-items: center; justify-content: flex-start; width: 100%; padding: var(--padding-small) var(--padding-medium); background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-medium); cursor: pointer; font-size: 0.95em; font-weight: 500; transition: all var(--transition-speed); margin-top: 10px; white-space: nowrap; overflow: hidden; }
-        #new-chat-btn svg { margin-right: 12px; width: 20px; height: 20px; flex-shrink: 0;}
-        #new-chat-btn:hover { background-color: var(--bg-interactive); color: var(--text-primary); border-color: var(--accent-color); }
-
+        .sidebar-internal-toggle { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 8px; display: block; transition: color var(--transition-speed); border-radius: 50%; }
+        .sidebar-internal-toggle:hover { background-color: var(--bg-interactive); color: var(--text-primary); }
+        .sidebar-internal-toggle .material-icons-outlined { font-size: 28px; display: block; }
+        #new-chat-btn { display: flex; align-items: center; justify-content: flex-start; width: 100%; padding: var(--padding-small) var(--padding-medium); background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-medium); cursor: pointer; font-size: 1em; font-weight: 500; transition: all var(--transition-speed); margin-top: 10px; white-space: nowrap; overflow: hidden; }
+        #new-chat-btn .material-icons-outlined { margin-right: 12px; font-size: 22px; flex-shrink: 0;}
+        #new-chat-btn:hover { background-color: var(--bg-interactive); color: var(--text-primary); border-color: var(--accent-color); transform: translateY(-1px); box-shadow: 0 0 8px var(--accent-glow); }
         #chat-list { list-style: none; flex-grow: 1; overflow-y: auto; margin-top: var(--padding-medium); padding-right: 5px; }
-        #chat-list li { display: flex; align-items: center; justify-content: space-between; padding: var(--padding-small) var(--padding-medium); margin-bottom: 8px; border-radius: var(--border-radius-medium); cursor: pointer; transition: background-color var(--transition-speed), color var(--transition-speed); white-space: nowrap; overflow: hidden; position: relative; color: var(--text-secondary); }
-        #chat-list li .chat-name { text-overflow: ellipsis; overflow: hidden; flex-grow: 1; margin-right: 10px;}
-        #chat-list li:hover { background-color: var(--bg-interactive); color: var(--text-primary); }
-        #chat-list li.active { background-color: var(--accent-color); color: white; font-weight: 500; }
-        #chat-list li .delete-chat-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.3em; line-height: 1; cursor: pointer; padding: 0 5px; opacity: 0; transition: opacity var(--transition-speed), color var(--transition-speed); margin-left: auto; flex-shrink: 0; }
-        #chat-list li:hover .delete-chat-btn { opacity: 0.7; }
-        #chat-list li .delete-chat-btn:hover { opacity: 1; color: var(--error-color); }
-        #chat-list li.active .delete-chat-btn { color: white; }
+        #chat-list li { display: flex; align-items: center; justify-content: space-between; padding: var(--padding-small) var(--padding-medium); margin-bottom: 8px; border-radius: var(--border-radius-medium); cursor: pointer; transition: background-color var(--transition-speed), color var(--transition-speed), transform 0.2s ease-out; white-space: nowrap; overflow: hidden; position: relative; color: var(--text-secondary); border: 1px solid transparent; }
+        #chat-list li .chat-name { text-overflow: ellipsis; overflow: hidden; flex-grow: 1; margin-right: 10px; pointer-events: none; }
+        #chat-list li:hover { background-color: var(--bg-interactive); color: var(--text-primary); transform: translateX(3px); }
+        #chat-list li.active { background-color: var(--accent-color); color: white; font-weight: 600; border-color: var(--accent-hover); }
+        #chat-list li.active:hover { background-color: var(--accent-hover); }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 99; opacity: 0; visibility: hidden; transition: opacity var(--transition-speed), visibility var(--transition-speed); backdrop-filter: blur(3px); }
+        .sidebar-overlay.visible { opacity: 1; visibility: visible; }
 
-        /* --- Chat Area --- */
-        .chat-area { flex-grow: 1; display: flex; flex-direction: column; background-color: var(--bg-primary); height: 100%; margin-left: var(--sidebar-width); /* Desktop Standard */ transition: margin-left var(--transition-speed); position: relative; }
-        .chat-area.sidebar-collapsed { margin-left: 0; } /* Mobile Ansicht */
-
-        .chat-header { height: var(--header-height); padding: 0 var(--padding-main); border-bottom: 1px solid var(--border-color); background-color: rgba(15, 15, 15, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; font-weight: 600; font-size: 1.15em; color: var(--text-primary); position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
-        #sidebar-toggle-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 10px; margin-right: var(--padding-medium); display: none; /* Standard unsichtbar */ transition: color var(--transition-speed); }
-        #sidebar-toggle-btn svg { width: 24px; height: 24px; display: block; }
-        #sidebar-toggle-btn:hover { color: var(--text-primary); }
+        /* --- Chat Area (unchanged) --- */
+        .chat-area { flex-grow: 1; display: flex; flex-direction: column; background-color: var(--bg-primary); height: 100%; margin-left: 0; transition: margin-left var(--transition-speed); position: relative; }
+        .chat-header { height: var(--header-height); padding: 0 var(--padding-main); border-bottom: 1px solid var(--border-color); background-color: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: flex; align-items: center; font-weight: 600; font-size: 1.2em; color: var(--text-primary); position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
+        #sidebar-toggle-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 10px; margin-right: var(--padding-medium); display: block; transition: color var(--transition-speed); border-radius: 50%; }
+        #sidebar-toggle-btn:hover { background-color: var(--bg-interactive); color: var(--text-primary); }
+        #sidebar-toggle-btn .material-icons-outlined { font-size: 28px; display: block; }
         #current-chat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        /* Willkommensnachricht */
-        .welcome-message { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-secondary); font-size: 1.2em; opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0.5s ease; pointer-events: none; }
+        .welcome-message { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-secondary); font-size: 1.3em; opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0.5s ease; pointer-events: none; }
         .welcome-message.visible { opacity: 1; visibility: visible; }
-        .welcome-message .logo { font-size: 2.5em; font-weight: 600; margin-bottom: 15px; }
+        .welcome-message .logo { font-size: 3em; font-weight: 700; margin-bottom: 20px; }
         .welcome-message .logo .ai-name { color: var(--accent-color); }
 
+        /* --- Chat Messages (unchanged styles, removed evaluation style) --- */
         .chat-messages { flex-grow: 1; overflow-y: auto; padding: var(--padding-main); display: flex; flex-direction: column; gap: var(--padding-medium); }
-        .message { display: flex; max-width: 85%; position: relative; }
-        .message-bubble { padding: var(--padding-small) var(--padding-medium); border-radius: var(--border-radius-medium); word-wrap: break-word; box-shadow: var(--shadow-sm); position: relative; }
-        .message .sender { font-size: 0.85em; font-weight: 600; margin-bottom: 6px; display: block; opacity: 0.9; }
-        .message-content { line-height: 1.65; }
-        .message-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: var(--bg-interactive); margin-right: 12px; flex-shrink: 0; align-self: flex-start; font-size: 0.8em; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-primary); box-shadow: var(--shadow-sm); }
+        .message { display: flex; max-width: 88%; position: relative; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message-bubble { padding: var(--padding-small) var(--padding-medium); border-radius: var(--border-radius-medium); word-wrap: break-word; box-shadow: var(--shadow-sm); position: relative; transition: background-color var(--transition-speed); }
+        .message .sender { font-size: 0.88em; font-weight: 600; margin-bottom: 6px; display: block; opacity: 0.9; }
+        .message-content { line-height: 1.65; position: relative; }
+        .typing-indicator { display: inline-block; width: 8px; height: 8px; background-color: currentColor; border-radius: 50%; margin: 0 2px; animation: typing 1s infinite ease-in-out; }
+        .typing-indicator:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator:nth-child(2) { animation-delay: 0.1s; }
+        .typing-indicator:nth-child(3) { animation-delay: 0.2s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        .message-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--bg-interactive); margin-right: 14px; flex-shrink: 0; align-self: flex-start; font-size: 0.9em; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-primary); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); }
         .user-message { align-self: flex-end; flex-direction: row-reverse; }
-        .user-message .message-avatar { background: var(--user-bubble); color: var(--user-text); margin-right: 0; margin-left: 12px; }
+        .user-message .message-avatar { background: var(--user-bubble); color: var(--user-text); margin-right: 0; margin-left: 14px; border: none; }
         .user-message .message-bubble { background: var(--user-bubble); color: var(--user-text); border-bottom-right-radius: var(--border-radius-small); }
         .user-message .sender { display: none; }
         .ai-message { align-self: flex-start; }
-        .ai-message .message-avatar { background-color: var(--accent-color); }
+        .ai-message .message-avatar { background-color: var(--accent-color); color: white; border: none; }
         .ai-message .message-bubble { background-color: var(--ai-bubble); color: var(--ai-text); border-bottom-left-radius: var(--border-radius-small); }
         .ai-message .sender { color: var(--accent-color); }
-        .system-thought-message { align-self: center; max-width: 90%; opacity: 0.8; font-size: 0.9em; }
-        .system-thought-message .message-avatar { background-color: var(--thought-bubble); color: var(--text-secondary); font-size: 0.6em; width: 30px; height: 30px;}
-        .system-thought-message .message-bubble { background-color: var(--thought-bubble); color: var(--thought-text); font-style: italic; border-radius: var(--border-radius-small); padding: 8px 12px; box-shadow: none; }
+        .system-thought-message { align-self: center; max-width: 92%; opacity: 0.85; font-size: 0.9em; animation: fadeInThought 0.5s ease-out; margin: 5px 0; }
+        @keyframes fadeInThought { from { opacity: 0; transform: scale(0.95); } to { opacity: 0.85; transform: scale(1); } }
+        .system-thought-message .message-avatar { background-color: var(--thought-bubble); color: var(--text-secondary); font-size: 0.7em; width: 32px; height: 32px;}
+        .system-thought-message .message-bubble { background-color: var(--thought-bubble); color: var(--thought-text); font-style: italic; border-radius: var(--border-radius-small); padding: 10px 14px; box-shadow: none; border: 1px dashed var(--border-color); }
         .system-thought-message .sender { color: var(--text-secondary); font-weight: 500; }
         .error-message { align-self: center; max-width: 90%; }
-        .error-message .message-avatar { background-color: var(--error-bg); color: var(--error-color); font-size: 1em; }
+        .error-message .message-avatar { background-color: var(--error-bg); color: var(--error-color); font-size: 1.1em; border: 1px solid var(--error-color); }
         .error-message .message-bubble { background-color: var(--error-bg); color: var(--error-color); border: 1px solid var(--error-color); border-radius: var(--border-radius-medium); box-shadow: none;}
         .error-message .sender { color: var(--error-color); font-weight: 600; }
-
-        /* Markdown & KaTeX Styling */
-        .message-bubble pre { background-color: rgba(0,0,0,0.3); padding: var(--padding-small); border-radius: var(--border-radius-small); overflow-x: auto; margin: 10px 0; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; border: 1px solid var(--border-color); }
-        .message-bubble code:not(pre code) { background-color: rgba(255,255,255,0.1); padding: 3px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; }
-        .message-bubble strong { font-weight: 600; }
+        .message-actions { margin-top: 10px; display: flex; gap: 8px; justify-content: flex-end; opacity: 0; transition: opacity 0.3s ease; }
+        .ai-message .message-bubble:hover .message-actions, .message-actions.visible { opacity: 1; }
+        .message-actions button { background: rgba(255, 255, 255, 0.1); border: none; color: var(--text-secondary); padding: 5px 8px; border-radius: var(--border-radius-small); cursor: pointer; transition: all var(--transition-speed); display: flex; align-items: center; gap: 4px; font-size: 0.8em; }
+        .message-actions button:hover { background: rgba(255, 255, 255, 0.2); color: var(--text-primary); }
+        .message-actions button .material-icons-outlined { font-size: 16px; }
+        .message-actions button:disabled { opacity: 0.5; cursor: not-allowed; background: rgba(255, 255, 255, 0.05); }
+        .copy-feedback { position: absolute; bottom: -25px; right: 0; background-color: var(--accent-color); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .copy-feedback.show { opacity: 1; }
+        .message-bubble pre { background-color: rgba(0,0,0,0.4); padding: var(--padding-medium); border-radius: var(--border-radius-small); overflow-x: auto; margin: 12px 0; font-family: 'Courier New', Courier, monospace; font-size: 0.95em; border: 1px solid var(--border-color); box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
+        .message-bubble code:not(pre code) { background-color: rgba(255,255,255,0.15); padding: 3px 7px; border-radius: 5px; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; }
+        .message-bubble strong { font-weight: 700; color: #ffffff; }
         .message-bubble em { font-style: italic; color: #c7d2fe; }
-        .message-bubble ul, .message-bubble ol { margin: 10px 0 10px 25px; padding-left: 15px;}
-        .message-bubble li { margin-bottom: 6px; }
-        .message-bubble blockquote { border-left: 4px solid var(--accent-color); padding-left: var(--padding-medium); margin: 12px 0; color: var(--text-secondary); font-style: italic; background-color: rgba(14, 165, 233, 0.05); border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0; }
-        .message-bubble a { color: var(--accent-color); text-decoration: none; font-weight: 500; }
-        .message-bubble a:hover { text-decoration: underline; }
-        .katex { font-size: 1.1em; }
+        .message-bubble ul, .message-bubble ol { margin: 12px 0 12px 30px; padding-left: 18px;}
+        .message-bubble li { margin-bottom: 8px; }
+        .message-bubble blockquote { border-left: 4px solid var(--accent-color); padding-left: var(--padding-medium); margin: 15px 0; color: var(--text-secondary); font-style: italic; background-color: rgba(14, 165, 233, 0.08); border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0; }
+        .message-bubble a { color: var(--accent-color); text-decoration: none; font-weight: 600; }
+        .message-bubble a:hover { text-decoration: underline; filter: brightness(1.2); }
+        .katex { font-size: 1.1em; padding: 2px 0; }
 
         /* --- Input Area --- */
-        .input-area { padding: var(--padding-medium) var(--padding-main) var(--input-padding-bottom); border-top: 1px solid var(--border-color); background: linear-gradient(180deg, rgba(15, 15, 15, 0), var(--bg-primary) 60%); position: sticky; bottom: 0; z-index: 5; flex-shrink: 0; display: flex; flex-direction: column; gap: var(--padding-medium); transition: opacity 0.3s, visibility 0.3s; }
-        .input-area.hidden { opacity: 0; visibility: hidden; pointer-events: none; /* Vollständig ausblenden */ }
+        .input-area {
+            padding: 15px var(--padding-main) var(--input-area-padding-bottom); /* Adjusted padding */
+            border-top: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0), var(--bg-input) 40%); /* Use input background */
+            position: sticky; bottom: 0; z-index: 5;
+            flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; /* Reduced gap */
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .input-area.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .action-buttons button { padding: 8px 16px; border: 1px solid var(--border-color); background-color: var(--bg-tertiary); color: var(--text-secondary); border-radius: var(--border-radius-medium); cursor: pointer; transition: all var(--transition-speed); font-size: 0.9em; font-weight: 500; }
-        .action-buttons button:hover { background-color: var(--bg-interactive); color: var(--text-primary); border-color: var(--text-secondary); }
-        .action-buttons button.active { background-color: var(--accent-color); color: white; border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
+        /* Mode Dropdowns Container */
+        .mode-selectors { display: flex; gap: 10px; margin-bottom: 5px; /* Space between dropdowns and input */ }
 
-        .input-wrapper { display: flex; gap: 10px; align-items: flex-end; background-color: var(--bg-secondary); border-radius: var(--border-radius-main); padding: 10px 12px 10px 16px; border: 1px solid var(--border-color); transition: border-color var(--transition-speed), box-shadow var(--transition-speed); box-shadow: var(--shadow-md); }
-        .input-wrapper:focus-within { border-color: var(--accent-color); box-shadow: 0 0 8px var(--accent-glow), var(--shadow-md); }
-        #message-input { flex-grow: 1; border: none; background-color: transparent; color: var(--text-primary); font-family: var(--font-main); font-size: 1.05em; resize: none; min-height: 26px; max-height: 250px; overflow-y: auto; line-height: 1.6; outline: none; padding: 6px 0; }
+        /* Styling for <details> as dropdown */
+        .mode-selectors details { position: relative; display: inline-block; }
+        .mode-selectors summary {
+            list-style: none; /* Remove default marker */
+            padding: 6px 12px;
+            background-color: var(--bg-interactive);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-medium);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 0.9em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .mode-selectors summary::-webkit-details-marker { display: none; } /* Hide marker in Chrome */
+        .mode-selectors summary:hover { background-color: #3a3a3a; color: var(--text-primary); }
+        .mode-selectors details[open] summary { background-color: #3a3a3a; border-color: var(--accent-color); color: var(--text-primary); }
+        .mode-selectors summary .material-icons-outlined { font-size: 18px; }
+        /* Dropdown Menu */
+        .mode-selectors details .dropdown-menu {
+            position: absolute;
+            bottom: 100%; /* Position above the summary */
+            left: 0;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-md);
+            padding: 8px 0;
+            margin-bottom: 8px; /* Space between menu and summary */
+            min-width: 180px;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        }
+        .mode-selectors details[open] .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .mode-selectors .dropdown-menu ul { list-style: none; padding: 0; margin: 0; }
+        .mode-selectors .dropdown-menu li {
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+        .mode-selectors .dropdown-menu li:hover { background-color: var(--bg-interactive); color: var(--text-primary); }
+        .mode-selectors .dropdown-menu li.active { background-color: var(--accent-color); color: white; font-weight: 600; }
+        .mode-selectors .dropdown-menu li .material-icons-outlined { font-size: 18px; }
+
+        .input-wrapper {
+            display: flex; gap: 12px; align-items: flex-end; /* Align items to bottom */
+            background-color: var(--bg-secondary); border-radius: var(--border-radius-main);
+            padding: 10px 12px 10px 18px; /* Adjusted padding */
+            border: 1px solid var(--border-color);
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+            box-shadow: var(--shadow-sm); /* Subtle shadow */
+            min-height: var(--input-wrapper-height); /* Ensure min height */
+        }
+        .input-wrapper:focus-within { border-color: var(--accent-color); box-shadow: 0 0 8px var(--accent-glow), var(--shadow-sm); }
+        #message-input {
+            flex-grow: 1; border: none; background-color: transparent;
+            color: var(--text-primary); font-family: var(--font-main); font-size: 1.05em; /* Slightly smaller */
+            resize: none;
+            min-height: 26px; /* Consistent min-height related to line-height */
+            max-height: 200px; /* Limit growth */
+            overflow-y: auto; line-height: 1.6; outline: none;
+            padding: 6px 0; /* Vertical padding for text alignment */
+            align-self: stretch; /* Make textarea fill vertical space */
+        }
         #message-input::placeholder { color: var(--text-placeholder); }
-        #send-button { background-color: var(--accent-color); color: white; border: none; border-radius: var(--border-radius-medium); width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all var(--transition-speed); align-self: flex-end; }
-        #send-button:hover { background-color: var(--accent-hover); transform: scale(1.05); }
-        #send-button:disabled { background-color: var(--bg-interactive); cursor: not-allowed; opacity: 0.6; transform: none;}
-        #send-button svg { width: 24px; height: 24px; fill: white; }
+        #send-button {
+            background-color: var(--accent-color); color: white; border: none;
+            border-radius: var(--border-radius-medium);
+            width: 48px; /* Slightly smaller button */
+            height: 48px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: all var(--transition-speed);
+            align-self: flex-end; /* Keep aligned to bottom */
+             margin-bottom: 2px; /* Fine-tune alignment if needed */
+        }
+        #send-button:hover { background-color: var(--accent-hover); transform: scale(1.08) rotate(5deg); }
+        #send-button:disabled { background-color: var(--bg-interactive); cursor: not-allowed; opacity: 0.5; transform: none; }
+        #send-button .material-icons-outlined { font-size: 24px; transition: transform 0.2s ease-out; }
+        #send-button:not(:disabled):hover .material-icons-outlined { transform: scale(1.1); }
 
         /* --- Utility & Loading --- */
-        .loading-indicator { display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-style: italic; font-size: 0.9em; height: auto; position: absolute; /* Über Input positionieren */ bottom: calc(var(--input-padding-bottom) + 75px); /* Dynamischer Abstand */ left: 50%; transform: translateX(-50%); background-color: rgba(37, 37, 37, 0.9); padding: 6px 15px; border-radius: var(--border-radius-small); opacity: 0; visibility: hidden; /* Start hidden */ transition: opacity 0.2s ease-in-out, bottom 0.3s ease, visibility 0.2s; pointer-events: none; z-index: 6; }
+        .loading-indicator {
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-secondary); font-style: italic; font-size: 0.9em;
+            height: auto;
+            position: fixed; /* Fixed position relative to viewport */
+            bottom: 100px; /* Start position above input area - ADJUST AS NEEDED */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(20, 20, 20, 0.9); /* Darker background */
+            padding: 8px 18px;
+            border-radius: var(--border-radius-small);
+            border: 1px solid var(--border-color);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s, bottom 0.3s ease; /* Smooth transitions */
+            pointer-events: none; z-index: 15;
+            backdrop-filter: blur(6px);
+            box-shadow: var(--shadow-md);
+        }
         .loading-indicator.visible { opacity: 1; visibility: visible; }
         .loading-spinner { border: 3px solid var(--bg-interactive); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; margin-right: 10px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-         /* Overlay für mobile Sidebar */
-         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 99; opacity: 0; visibility: hidden; transition: opacity var(--transition-speed), visibility var(--transition-speed); }
-         .sidebar-overlay.visible { opacity: 1; visibility: visible; }
+         /* Context Menu (unchanged) */
+        .context-menu { position: absolute; z-index: 1000; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--border-radius-medium); box-shadow: var(--shadow-md); padding: 8px 0; min-width: 150px; opacity: 0; visibility: hidden; transform: scale(0.95); transform-origin: top left; transition: opacity 0.15s ease-out, transform 0.15s ease-out, visibility 0.15s; }
+        .context-menu.visible { opacity: 1; visibility: visible; transform: scale(1); }
+        .context-menu ul { list-style: none; padding: 0; margin: 0; }
+        .context-menu li { padding: 10px 16px; color: var(--text-secondary); cursor: pointer; transition: background-color var(--transition-speed), color var(--transition-speed); display: flex; align-items: center; gap: 10px; font-size: 0.95em; }
+        .context-menu li:hover { background-color: var(--bg-interactive); color: var(--text-primary); }
+        .context-menu li .material-icons-outlined { font-size: 18px; }
+        .context-menu li.delete:hover { background-color: rgba(244, 63, 94, 0.2); color: var(--error-color); }
 
         /* --- Responsiveness --- */
+        @media (max-width: 992px) { .chat-area { margin-left: 0 !important; } }
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); /* Standardmäßig versteckt */ }
-            .sidebar:not(.collapsed) { transform: translateX(0); /* Sichtbar machen */ }
-            .sidebar:not(.collapsed) .sidebar-internal-toggle { display: block; /* Schließen-Button in Sidebar anzeigen */ }
-
-            .chat-area { margin-left: 0 !important; } /* Chat immer volle Breite */
-            #sidebar-toggle-btn { display: block; } /* Hamburger anzeigen */
-
+            :root { --sidebar-width: 260px; --header-height: 65px; --padding-main: 16px; --padding-medium: 12px; --input-area-padding-bottom: 16px; --border-radius-main: 16px; --border-radius-medium: 12px; }
+            .chat-area { margin-left: 0 !important; }
+            #sidebar-toggle-btn { display: block; }
             .chat-header { padding: 0 var(--padding-medium); font-size: 1.1em; }
             .chat-messages { padding: var(--padding-medium); gap: var(--padding-small); }
-            .message { max-width: 95%; }
-            .message-avatar { width: 32px; height: 32px; }
-
-            .input-area { padding: var(--padding-small) var(--padding-medium) var(--padding-medium); --input-padding-bottom: 16px; }
-            .action-buttons { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; margin-bottom: var(--padding-small); }
-            .input-wrapper { padding: 8px 10px 8px 12px; }
-            #message-input { font-size: 1em; }
-            #send-button { width: 44px; height: 44px; border-radius: var(--border-radius-medium); }
-            #send-button svg { width: 22px; height: 22px; }
-
-            .loading-indicator { bottom: calc(var(--input-padding-bottom) + 65px); }
+            .message { max-width: 96%; }
+            .message-avatar { width: 36px; height: 36px; margin-right: 10px; }
+            .user-message .message-avatar { margin-left: 10px; }
+            .system-thought-message .message-avatar { width: 30px; height: 30px; }
+            .input-area { padding: 10px var(--padding-medium) var(--input-area-padding-bottom); }
+             /* Adjust dropdown/input layout for mobile */
+            .mode-selectors { flex-wrap: wrap; /* Allow wrapping if needed */ }
+             .mode-selectors summary { padding: 5px 10px; font-size: 0.85em; }
+             .input-wrapper { padding: 8px 10px 8px 12px; min-height: 50px;}
+            #message-input { font-size: 1em; max-height: 150px; }
+            #send-button { width: 44px; height: 44px; }
+            #send-button .material-icons-outlined { font-size: 22px; }
+            .loading-indicator { bottom: 85px; padding: 6px 14px; font-size: 0.85em; }
+            .welcome-message { font-size: 1.1em; }
+            .welcome-message .logo { font-size: 2.5em; }
         }
+         @media (max-width: 480px) {
+            :root { --padding-main: 12px; --padding-medium: 10px; --padding-small: 8px; --header-height: 60px; --border-radius-main: 14px; --border-radius-medium: 10px; --input-area-padding-bottom: 12px; }
+             .sidebar { width: 240px; }
+             .chat-header { font-size: 1em; }
+             #sidebar-toggle-btn .material-icons-outlined, .sidebar-internal-toggle .material-icons-outlined { font-size: 24px; }
+             #new-chat-btn { font-size: 0.95em; padding: 10px 12px; }
+             #new-chat-btn .material-icons-outlined { font-size: 20px; }
+             #chat-list li { padding: 10px 12px; margin-bottom: 6px; }
+             .message { max-width: 98%; }
+             .message-avatar { width: 32px; height: 32px; margin-right: 8px; }
+             .user-message .message-avatar { margin-left: 8px; }
+             .input-area { padding: 8px 10px var(--input-area-padding-bottom); gap: 8px; }
+             .mode-selectors { gap: 8px; }
+             .mode-selectors summary { padding: 4px 8px; font-size: 0.8em; }
+             .mode-selectors summary .material-icons-outlined { font-size: 16px; }
+             .mode-selectors details .dropdown-menu { min-width: 150px; }
+             .mode-selectors .dropdown-menu li { padding: 8px 12px; font-size: 0.9em; gap: 8px; }
+             .input-wrapper { padding: 8px 10px 8px 12px; gap: 8px; min-height: 48px; }
+             #message-input { font-size: 0.95em; min-height: 24px; }
+             #send-button { width: 40px; height: 40px; }
+             #send-button .material-icons-outlined { font-size: 20px; }
+             .loading-indicator { bottom: 75px; padding: 5px 12px; font-size: 0.8em; }
+             .loading-spinner { width: 16px; height: 16px; }
+         }
+
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar collapsed" id="sidebar"> <!-- Startet collapsed, JS entfernt Klasse für Desktop -->
+        <!-- Sidebar (Structure unchanged) -->
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h1>Lenos<span class="ai-name">.ai</span></h1>
                  <button class="sidebar-internal-toggle" id="sidebar-close-btn" title="Sidebar schließen">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+                     <span class="material-icons-outlined">close</span>
                  </button>
             </div>
             <button id="new-chat-btn" title="Neuer Chat">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z"></path></svg>
+                <span class="material-icons-outlined">add_circle_outline</span>
                 <span>Neuer Chat</span>
             </button>
             <ul id="chat-list"></ul>
         </div>
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-        <!-- Main Chat Area -->
+        <!-- Main Chat Area (Structure unchanged) -->
         <div class="chat-area" id="chat-area">
             <div class="chat-header">
                  <button id="sidebar-toggle-btn" title="Sidebar umschalten">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+                     <span class="material-icons-outlined">menu</span>
                  </button>
                 <span id="current-chat-name">Willkommen bei Lenos.ai</span>
             </div>
-
-            <div class="welcome-message visible" id="welcome-message"> <!-- Start visible -->
+            <div class="welcome-message" id="welcome-message">
                  <div class="logo">Lenos<span class="ai-name">.ai</span></div>
-                 <div>Wähle einen Chat aus oder erstelle einen neuen,<br> um zu beginnen.</div>
+                 <div>Wähle einen Chat aus oder erstelle einen neuen,<br> um die intelligente Kollaboration zu starten.</div>
             </div>
-
             <div class="chat-messages" id="chat-messages"></div>
 
-            <div class="loading-indicator" id="loading-indicator">
+             <!-- Loading Indicator - Position fixed -->
+             <div class="loading-indicator" id="loading-indicator">
                 <div class="loading-spinner"></div>
                 <span id="loading-text">Denke...</span>
             </div>
 
-            <div class="input-area hidden" id="input-area"> <!-- Start hidden -->
-                <div class="action-buttons" id="action-buttons">
-                    <button data-mode="deepthink" title="Beide KIs in eine tiefe Analyse einbeziehen">Deepthink</button>
-                    <button data-mode="deeperthink" title="Ein strengerer Deepthink-Prozess">Deeperthink</button>
-                    <button data-mode="article" title="Langen, strukturierten Artikel generieren">Artikel</button>
-                    <button data-mode="brainstorm" title="Kreative Ideen von beiden KIs">Brainstorm</button>
-                    <button data-mode="random" title="Zufälligen Fakt erhalten">Zufall</button>
+            <!-- Input Area with Dropdowns -->
+            <div class="input-area hidden" id="input-area">
+                <div class="mode-selectors">
+                    <!-- Think Dropdown -->
+                    <details id="think-dropdown">
+                        <summary>
+                            <span class="material-icons-outlined">psychology</span>
+                            <span id="think-mode-label">Standard</span> <!-- Dynamic Label -->
+                        </summary>
+                        <div class="dropdown-menu">
+                            <ul>
+                                <li data-mode="standard" class="active"><span class="material-icons-outlined">chat_bubble_outline</span>Standard</li>
+                                <li data-mode="deepthink"><span class="material-icons-outlined">model_training</span>Deepthink</li>
+                                <li data-mode="deeperthink"><span class="material-icons-outlined">settings_intelligence</span>Deeperthink</li>
+                            </ul>
+                        </div>
+                    </details>
+                    <!-- Tools Dropdown -->
+                    <details id="tools-dropdown">
+                        <summary>
+                            <span class="material-icons-outlined">construction</span>
+                            <span id="tool-mode-label">Kein Tool</span> <!-- Dynamic Label -->
+                        </summary>
+                        <div class="dropdown-menu">
+                            <ul>
+                                <li data-mode="none" class="active"><span class="material-icons-outlined">cancel</span>Kein Tool</li>
+                                <li data-mode="article"><span class="material-icons-outlined">article</span>Artikel</li>
+                                <li data-mode="brainstorm"><span class="material-icons-outlined">emoji_objects</span>Brainstorm</li>
+                                <li data-mode="languageCheck"><span class="material-icons-outlined">spellcheck</span>Sprachprüfung</li>
+                                <li data-mode="taskSolver"><span class="material-icons-outlined">functions</span>Task Solver</li>
+                                <li data-mode="random"><span class="material-icons-outlined">casino</span>Zufall</li>
+                            </ul>
+                        </div>
+                    </details>
                 </div>
                 <div class="input-wrapper">
-                    <textarea id="message-input" placeholder="Nachricht eingeben oder Modus wählen..." rows="1"></textarea>
-                    <button id="send-button" title="Nachricht senden">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"></path></svg>
+                    <textarea id="message-input" placeholder="Nachricht eingeben..." rows="1"></textarea>
+                    <button id="send-button" title="Nachricht senden" disabled>
+                        <span class="material-icons-outlined">send</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Context Menu (Structure unchanged) -->
+    <div class="context-menu" id="chat-context-menu">
+        <ul>
+            <li id="ctx-rename"><span class="material-icons-outlined">edit</span>Umbenennen</li>
+            <li id="ctx-delete" class="delete"><span class="material-icons-outlined">delete_outline</span>Löschen</li>
+        </ul>
+    </div>
+
+
     <script>
         // --- API Konfiguration ---
         const GEMINI_API_KEY = "AIzaSyAGw-gCzOw8uDDb-Fk82jUzsj-j7fIZbq8"; // <--- PUT YOUR GEMINI KEY HERE
         const MISTRAL_API_KEY = "Cu86Uk67cKXeG7Khlv6bum1ogeMWVMbW"; // <--- PUT YOUR MISTRAL KEY HERE
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+        // Consider 1.5 Pro for complex tasks / longer context if needed and available
+        // const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
         const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
         const MISTRAL_MODEL = 'mistral-large-latest';
+
+        // --- Constants ---
+        const MAX_REFINEMENT_ITERATIONS = 2; // Max attempts to improve response
+        const MODE_THRESHOLDS = { // Min average score needed
+            standard: 7,
+            deepthink: 8,
+            deeperthink: 9,
+            article: 8,
+            brainstorm: 7,
+            languageCheck: 7,
+            taskSolver: 7,
+            random: 7,
+            none: 7 // Default if a tool mode is deselected
+        };
+        const LONG_PRESS_DURATION = 500; // ms for context menu
+        const STORAGE_KEY = 'lenosAi_chats_v5'; // Increment version
+        const LAST_ACTIVE_KEY = 'lenosAi_lastActive_v5';
 
         // --- DOM Elemente ---
         const sidebar = document.getElementById('sidebar');
@@ -273,106 +467,108 @@
         const chatMessagesEl = document.getElementById('chat-messages');
         const messageInputEl = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
-        const actionButtonsContainer = document.getElementById('action-buttons');
         const loadingIndicator = document.getElementById('loading-indicator');
         const loadingText = document.getElementById('loading-text');
         const currentChatNameEl = document.getElementById('current-chat-name');
         const inputArea = document.getElementById('input-area');
         const welcomeMessageEl = document.getElementById('welcome-message');
+        const chatContextMenu = document.getElementById('chat-context-menu');
+        const thinkDropdown = document.getElementById('think-dropdown');
+        const toolsDropdown = document.getElementById('tools-dropdown');
+        const thinkModeLabel = document.getElementById('think-mode-label');
+        const toolModeLabel = document.getElementById('tool-mode-label');
+
 
         // --- Zustand ---
         let chats = {};
         let currentChatId = null;
-        let activeMode = 'normal';
+        let activeThinkMode = 'standard'; // 'standard', 'deepthink', 'deeperthink'
+        let activeToolMode = 'none'; // 'none', 'article', 'brainstorm', 'languageCheck', 'taskSolver', 'random'
         let isSending = false;
-        let isAutoNamingChat = false; // Verhindert parallele Benennungsversuche
+        let isAutoNamingChat = false;
+        let contextMenuTargetChatId = null;
+        let longPressTimer = null;
 
         // --- Initialisierung ---
         document.addEventListener('DOMContentLoaded', () => {
-            initializeUI(); // UI-Status basierend auf Bildschirmgröße setzen
+            initializeUI();
             loadChats();
             setupEventListeners();
             autoResizeTextarea();
             updateSendButtonState();
             renderChatList();
+            updateModeLabels(); // Set initial dropdown labels
 
-            const lastActiveId = localStorage.getItem('lenosAi_lastActive_v3'); // Neuer Key für diese Version
+            const lastActiveId = localStorage.getItem(LAST_ACTIVE_KEY);
             if (lastActiveId && chats[lastActiveId]) {
                 switchChat(lastActiveId);
             } else if (Object.keys(chats).length > 0) {
                  const sortedIds = Object.keys(chats).sort((a, b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
                  switchChat(sortedIds[0]);
             } else {
-                 // Zeige Willkommensnachricht, wenn keine Chats da sind
                  showWelcomeState();
             }
-            // KaTeX für evtl. geladene Chats rendern
-            renderVisibleMath();
+            if (currentChatId) {
+                 setTimeout(() => renderVisibleMath(), 200);
+            }
+             hideContextMenu();
+             adjustLoadingIndicatorPosition(); // Initial position adjustment
         });
 
         // --- UI Initialisierung & Responsivität ---
-        function isMobileScreen() {
-            return window.innerWidth <= 768;
-        }
+        function isMobileScreen() { return window.innerWidth <= 768; }
 
         function initializeUI() {
-             if (isMobileScreen()) {
-                 sidebar.classList.add('collapsed');
-                 chatArea.classList.add('sidebar-collapsed');
-                 sidebarToggleBtn.style.display = 'block'; // Hamburger anzeigen
+            sidebar.classList.remove('visible');
+             if (!isMobileScreen()) {
+                 sidebar.classList.add('visible');
+                 chatArea.style.marginLeft = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
              } else {
-                 sidebar.classList.remove('collapsed'); // Desktop: Sidebar sichtbar
-                 chatArea.classList.remove('sidebar-collapsed');
-                 sidebarToggleBtn.style.display = 'none'; // Hamburger verstecken
+                 chatArea.style.marginLeft = '0';
              }
-             // Passenden Margin setzen (nur relevant für Desktop)
-             chatArea.style.marginLeft = sidebar.classList.contains('collapsed') ? '0' : getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+             sidebarToggleBtn.style.display = 'block';
         }
 
         function handleResize() {
-            const mobile = isMobileScreen();
-             // Nur den Toggle-Button ein/ausblenden, die Sidebar selbst wird nur durch Klick geändert
-             sidebarToggleBtn.style.display = mobile ? 'block' : 'none';
-
-             // Wenn wir von Mobil zu Desktop wechseln und Sidebar war zu -> öffnen
-             if (!mobile && sidebar.classList.contains('collapsed')) {
-                 // Eigentlich sollte sie auf Desktop nie 'collapsed' sein, außer initial
-                 sidebar.classList.remove('collapsed');
+             const mobile = isMobileScreen();
+             if (!mobile && !sidebar.classList.contains('visible')) {
+                 sidebar.classList.add('visible');
                  sidebarOverlay.classList.remove('visible');
-                 chatArea.classList.remove('sidebar-collapsed'); // Redundant, da über Margin gesteuert
                  chatArea.style.marginLeft = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
-             } else if (mobile && !sidebar.classList.contains('collapsed')) {
-                 // Wenn von Desktop zu Mobil und Sidebar war offen -> schließen
-                 // Dieses Verhalten ist optional, könnte auch offen bleiben
-                 sidebar.classList.add('collapsed');
+             } else if (mobile && sidebar.classList.contains('visible')) {
+                  sidebar.classList.remove('visible');
                  sidebarOverlay.classList.remove('visible');
-                 chatArea.classList.add('sidebar-collapsed'); // Redundant, da Margin 0 gesetzt wird
                  chatArea.style.marginLeft = '0';
              } else {
-                  // Ansonsten Margin entsprechend anpassen
-                  chatArea.style.marginLeft = sidebar.classList.contains('collapsed') ? '0' : getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+                 if (!mobile) {
+                    chatArea.style.marginLeft = sidebar.classList.contains('visible') ? getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width') : '0';
+                 } else {
+                     chatArea.style.marginLeft = '0';
+                 }
              }
+             hideContextMenu();
+             adjustLoadingIndicatorPosition(); // Adjust on resize
         }
 
-
         function toggleSidebar(forceClose = false) {
-            const shouldCollapse = forceClose || !sidebar.classList.contains('collapsed');
-            sidebar.classList.toggle('collapsed', shouldCollapse);
-            sidebarOverlay.classList.toggle('visible', !shouldCollapse && isMobileScreen()); // Overlay nur auf Mobile zeigen/verstecken
-
-             // Chat-Bereich-Margin anpassen (relevant für Desktop/Tablet)
-             chatArea.style.marginLeft = shouldCollapse ? '0' : getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
-              chatArea.classList.toggle('sidebar-collapsed', shouldCollapse); // Klasse für potenzielle andere Styles
-
-            // Internen Schließen-Button (nur mobil relevant) ein-/ausblenden
-             const closeBtn = document.getElementById('sidebar-close-btn');
-             if (closeBtn) closeBtn.style.display = (isMobileScreen() && !shouldCollapse) ? 'block' : 'none';
+            const shouldHide = forceClose || sidebar.classList.contains('visible');
+            sidebar.classList.toggle('visible', !shouldHide);
+            sidebarOverlay.classList.toggle('visible', !shouldHide && isMobileScreen());
+             if (!isMobileScreen()) {
+                 chatArea.style.marginLeft = shouldHide ? '0' : getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+             } else {
+                 chatArea.style.marginLeft = '0';
+             }
+            hideContextMenu();
         }
 
         function showWelcomeState() {
             welcomeMessageEl.classList.add('visible');
             inputArea.classList.add('hidden');
-            currentChatNameEl.textContent = "Willkommen bei Lenos.ai";
+            chatMessagesEl.innerHTML = '';
+            currentChatNameEl.textContent = "Willkommen";
+            currentChatId = null;
+            renderChatList();
         }
 
         function hideWelcomeState() {
@@ -380,266 +576,535 @@
             inputArea.classList.remove('hidden');
         }
 
+        // Adjust loading indicator position dynamically based on input area
+        function adjustLoadingIndicatorPosition() {
+             if (!inputArea || !loadingIndicator) return;
+             // Only adjust if input area is visible
+            if (inputArea.classList.contains('hidden')) {
+                 // Optionally hide indicator or set default position
+                 // loadingIndicator.style.bottom = '20px'; // Example default
+                 return;
+             }
+             const inputAreaRect = inputArea.getBoundingClientRect();
+             // Position it a fixed amount *above* the input area's top edge
+             const spaceAbove = 15; // pixels
+             loadingIndicator.style.bottom = `${window.innerHeight - inputAreaRect.top + spaceAbove}px`;
+        }
+
 
         // --- Event Listener ---
         function setupEventListeners() {
             newChatBtn.addEventListener('click', () => {
-                 if (createNewChat(true)) { // Erstellen & wechseln
-                     if(isMobileScreen()) toggleSidebar(true); // Sidebar auf Mobile schließen
-                 }
+                 if (createNewChat(true)) { if(isMobileScreen()) toggleSidebar(true); }
             });
             sendButton.addEventListener('click', handleSendMessage);
-            messageInputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } });
-            messageInputEl.addEventListener('input', autoResizeTextarea);
-            messageInputEl.addEventListener('input', updateSendButtonState);
+            messageInputEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }
+            });
+            messageInputEl.addEventListener('input', () => { autoResizeTextarea(); updateSendButtonState(); });
 
-            actionButtonsContainer.addEventListener('click', (e) => { /* ... (wie zuvor) ... */
-                if (e.target.tagName === 'BUTTON' && e.target.dataset.mode) {
-                    const selectedMode = e.target.dataset.mode;
-                    if (e.target.classList.contains('active')) { activeMode = 'normal'; setActiveButton('normal'); }
-                    else { activeMode = selectedMode; setActiveButton(selectedMode); }
-                    updateSendButtonState();
-                    if (selectedMode === 'random' && messageInputEl.value.trim() === '' && activeMode === 'random') handleSendMessage();
-                    else if (activeMode !== 'normal') messageInputEl.focus();
+            // Mode Dropdown Listeners
+            setupDropdownListener(thinkDropdown, (mode) => {
+                activeThinkMode = mode;
+                activeToolMode = 'none'; // Reset tool mode when think mode changes
+                updateModeLabels();
+                updateModeActiveStates();
+                messageInputEl.focus();
+            });
+            setupDropdownListener(toolsDropdown, (mode) => {
+                activeToolMode = mode;
+                // If a tool is selected, reset think mode to standard? (Optional, decided against for now)
+                // if (mode !== 'none') activeThinkMode = 'standard';
+                updateModeLabels();
+                updateModeActiveStates();
+                messageInputEl.focus();
+                // Auto-trigger Random mode if selected and input is empty
+                if (activeToolMode === 'random' && messageInputEl.value.trim() === '') {
+                     handleSendMessage();
                 }
             });
 
-            // Sidebar Toggle Logik
-            sidebarToggleBtn.addEventListener('click', () => toggleSidebar()); // Öffnet/Schließt
-            sidebarCloseBtn.addEventListener('click', () => toggleSidebar(true)); // Schließt immer
-            sidebarOverlay.addEventListener('click', () => toggleSidebar(true)); // Schließt immer
 
-            // Chat Liste Interaktion
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!thinkDropdown.contains(e.target)) thinkDropdown.removeAttribute('open');
+                if (!toolsDropdown.contains(e.target)) toolsDropdown.removeAttribute('open');
+                if (!chatContextMenu.contains(e.target) && !e.target.closest('li[data-chat-id]')) { hideContextMenu(); }
+            });
+
+            // Sidebar Toggles
+            sidebarToggleBtn.addEventListener('click', () => toggleSidebar());
+            sidebarCloseBtn.addEventListener('click', () => toggleSidebar(true));
+            sidebarOverlay.addEventListener('click', () => toggleSidebar(true));
+
+            // Chat List Interaction (Click for Switch, Context for Menu)
             chatListEl.addEventListener('click', (e) => {
                  const listItem = e.target.closest('li[data-chat-id]');
-                 if (!listItem) return;
+                 if (!listItem || chatContextMenu.classList.contains('visible')) return;
                  const chatId = listItem.dataset.chatId;
-
-                 if (e.target.classList.contains('delete-chat-btn')) { // Klick auf Löschen-Button
-                     e.stopPropagation();
-                     deleteChat(chatId);
-                 } else if (chatId && chatId !== currentChatId) { // Klick zum Wechseln
-                     switchChat(chatId);
-                     if(isMobileScreen()) toggleSidebar(true); // Sidebar auf Mobile schließen
-                 }
+                 if (chatId && chatId !== currentChatId) { switchChat(chatId); if(isMobileScreen()) toggleSidebar(true); }
              });
 
-             window.addEventListener('resize', handleResize); // Auf Größenänderung reagieren
+            // Context Menu Listeners (Right-click & Long Press)
+             chatListEl.addEventListener('contextmenu', (e) => { e.preventDefault(); const li = e.target.closest('li[data-chat-id]'); if (li) showContextMenu(e, li.dataset.chatId); });
+             chatListEl.addEventListener('touchstart', (e) => { const li = e.target.closest('li[data-chat-id]'); if (li) { clearTimeout(longPressTimer); longPressTimer = setTimeout(() => { showContextMenu(e, li.dataset.chatId); }, LONG_PRESS_DURATION); } });
+             chatListEl.addEventListener('touchend', () => clearTimeout(longPressTimer));
+             chatListEl.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+             document.getElementById('ctx-rename').addEventListener('click', handleRenameChat);
+             document.getElementById('ctx-delete').addEventListener('click', handleDeleteChatFromContext);
+
+             window.addEventListener('resize', handleResize);
+             // Adjust loader position also when textarea resizes (debounced?)
+              // Using MutationObserver is more robust but complex, resize listener is simpler for now
+              // window.addEventListener('input', adjustLoadingIndicatorPosition); // Might be too frequent
         }
 
-        // --- Kern-Chat-Funktionen ---
+        // Helper to setup dropdown listeners
+        function setupDropdownListener(dropdownElement, callback) {
+            const menu = dropdownElement.querySelector('.dropdown-menu ul');
+            if (!menu) return;
+            menu.addEventListener('click', (e) => {
+                const listItem = e.target.closest('li[data-mode]');
+                if (listItem) {
+                    const mode = listItem.dataset.mode;
+                    callback(mode);
+                    dropdownElement.removeAttribute('open'); // Close dropdown after selection
+                }
+            });
+        }
+
+        // Update labels of dropdown summaries
+        function updateModeLabels() {
+            const thinkLi = thinkDropdown.querySelector(`.dropdown-menu li[data-mode="${activeThinkMode}"]`);
+            thinkModeLabel.textContent = thinkLi ? thinkLi.textContent.trim() : 'Standard';
+
+            const toolLi = toolsDropdown.querySelector(`.dropdown-menu li[data-mode="${activeToolMode}"]`);
+            toolModeLabel.textContent = toolLi ? toolLi.textContent.trim() : 'Kein Tool';
+        }
+
+        // Update 'active' class on list items within dropdowns
+        function updateModeActiveStates() {
+            thinkDropdown.querySelectorAll('.dropdown-menu li').forEach(li => li.classList.toggle('active', li.dataset.mode === activeThinkMode));
+            toolsDropdown.querySelectorAll('.dropdown-menu li').forEach(li => li.classList.toggle('active', li.dataset.mode === activeToolMode));
+        }
+
+
+        // --- Context Menu Functions (unchanged) ---
+        function showContextMenu(event, chatId) { contextMenuTargetChatId = chatId; const { clientX: mouseX, clientY: mouseY } = (event.touches ? event.touches[0] : event); const menuWidth = chatContextMenu.offsetWidth; const menuHeight = chatContextMenu.offsetHeight; const windowWidth = window.innerWidth; const windowHeight = window.innerHeight; let x = mouseX; let y = mouseY; if (mouseX + menuWidth > windowWidth) x = windowWidth - menuWidth - 5; if (mouseY + menuHeight > windowHeight) y = windowHeight - menuHeight - 5; chatContextMenu.style.top = `${y}px`; chatContextMenu.style.left = `${x}px`; chatContextMenu.classList.add('visible'); }
+        function hideContextMenu() { chatContextMenu.classList.remove('visible'); contextMenuTargetChatId = null; }
+        function handleRenameChat() { if (!contextMenuTargetChatId || !chats[contextMenuTargetChatId]) return; const currentName = chats[contextMenuTargetChatId].name; const newName = prompt(`Neuen Namen für "${currentName}" eingeben:`, currentName); if (newName && newName.trim() !== '' && newName !== currentName) { chats[contextMenuTargetChatId].name = newName.trim(); saveChats(); renderChatList(); if (currentChatId === contextMenuTargetChatId) currentChatNameEl.textContent = newName.trim(); } hideContextMenu(); }
+        function handleDeleteChatFromContext() { if (!contextMenuTargetChatId) return; deleteChat(contextMenuTargetChatId); hideContextMenu(); }
+
+
+        // --- Core AI Collaboration Logic ---
         async function handleSendMessage() {
-            if (isSending || !currentChatId) return; // Verhindern, wenn kein Chat aktiv
+            if (isSending || !currentChatId) return;
 
             const userInput = messageInputEl.value.trim();
-            const modeToSend = activeMode;
+             // Determine the final mode to use
+             const modeToSend = activeToolMode !== 'none' ? activeToolMode : activeThinkMode;
 
-            if (userInput === '' && modeToSend !== 'random') { return; }
+            if (userInput === '' && modeToSend !== 'random') {
+                addErrorMessage("Bitte gib eine Nachricht ein.");
+                return;
+            }
 
             isSending = true;
-            setLoading(true, modeToSend === 'normal' ? "Antwortet..." : "Verarbeite..."); // Angepasster Text
+            setLoading(true, "Initialisiere...");
             sendButton.disabled = true;
+            adjustLoadingIndicatorPosition(); // Ensure correct position before showing
             const initialHistory = getChatHistory(currentChatId);
             const isFirstExchange = initialHistory.length === 0 && userInput !== '';
-            const userMessageText = userInput; // Für Auto-Benennung speichern
+            const userMessageTextForNaming = userInput || `Anfrage im ${modeToSend}-Modus`;
 
-            // Reset mode visually AFTER capturing it
-            if (activeMode !== 'normal') { activeMode = 'normal'; setActiveButton('normal'); }
-
-            if (userInput !== '') {
-                addUserMessage(userInput);
-                messageInputEl.value = ''; autoResizeTextarea();
+            // Add user message and clear input
+             if (userInput !== '') {
+                addUserMessage(userInput); // Saves message here
+                messageInputEl.value = '';
+                autoResizeTextarea();
             } else if (modeToSend === 'random') {
-                addUserMessage("[Zufälligen Fakt anfordern...]", false);
+                // Don't add a user message for random if input is empty
+                // The AI prompt handles the request
             }
             updateSendButtonState();
 
+            // --- The Collaborative Process with Refinement Loop ---
             let finalAiResponseText = null;
+            let currentResponse = null;
+            let refinementCritique = "";
+            let currentIteration = 0;
+            let averageScore = 0;
+            const requiredScore = MODE_THRESHOLDS[modeToSend] || 7; // Get threshold for the mode
+
             try {
-                switch (modeToSend) { /* ... (API-Logik für Modi wie zuvor) ... */
-                    case 'deepthink':
-                    case 'deeperthink':
-                         setLoading(true, "Gemini analysiert...");
-                         const geminiThoughts = await callGeminiAPI(`Analysiere tiefgehend: ${userMessageText}`, initialHistory);
-                         addSystemThoughtMessage(geminiThoughts, "Gemini (Gedanken)");
-                         setLoading(true, "Mistral verfeinert...");
-                         const historyForMistral = [...initialHistory, { role: 'model', parts: [{ text: geminiThoughts }] }];
-                         finalAiResponseText = await callMistralAPI(`Verfeinere diese Analyse: ${geminiThoughts}`, historyForMistral, true);
-                         setLoading(true, "Antwort wird erstellt...");
-                         addAiMessage(finalAiResponseText, "Lenos.ai (Synthese)");
+                // --- Define Base Prompt based on Mode ---
+                let basePrompt = userInput;
+                let responseMaxTokens = 3000; // Default tokens
+
+                switch(modeToSend) {
+                     case 'deepthink':
+                         basePrompt = `Führe eine tiefgehende, kritische Analyse der folgenden Anfrage durch. Berücksichtige mehrere Perspektiven und mögliche Implikationen. Anfrage: ${userInput}`;
+                         break;
+                     case 'deeperthink':
+                         basePrompt = `Führe eine extrem gründliche und nuancierte Analyse der folgenden Anfrage durch. Stelle Verbindungen her, hinterfrage Annahmen und synthetisiere komplexe Informationen. Sei sehr präzise und detailliert. Anfrage: ${userInput}`;
                          break;
                      case 'article':
-                         setLoading(true, "Artikel wird generiert...");
-                         finalAiResponseText = await callMistralAPI(`Schreibe langen Artikel über: ${userMessageText}`, initialHistory, true, 3500);
-                         addAiMessage(finalAiResponseText, "Lenos.ai (Artikel)");
+                         basePrompt = `Schreibe einen äußerst detaillierten und umfassenden Artikel (Ziel: >1500 Wörter, mindestens aber 1000 Wörter) über das folgende Thema. Gliedere den Artikel klar in logische Abschnitte/Kapitel mit Markdown-Überschriften (## für Hauptkapitel, ### für Unterkapitel). Gehe tief auf das Thema ein, liefere Fakten, Beispiele und Analysen. Beginne mit einer Einleitung und schließe mit einem Fazit. Thema: ${userInput}`;
+                         responseMaxTokens = 5000; // Allow more tokens for articles
                          break;
                      case 'brainstorm':
-                          setLoading(true, "Brainstorming (Gemini)...");
-                          const geminiIdeas = await callGeminiAPI(`Brainstorme Ideen für: ${userMessageText}`, initialHistory);
-                          addSystemThoughtMessage(`**Gemini Ideen:**\n${geminiIdeas}`, "Gemini");
-                          setLoading(true, "Brainstorming (Mistral)...");
-                          const mistralIdeas = await callMistralAPI(`Brainstorme *weitere* Ideen für: ${userMessageText}`, [...initialHistory, { role: 'model', parts: [{ text: geminiIdeas }] }], true);
-                          addSystemThoughtMessage(`**Mistral Ideen:**\n${mistralIdeas}`, "Mistral");
-                          finalAiResponseText = `**Kombinierte Ideen:**\n\n**Gemini:**\n${geminiIdeas}\n\n**Mistral:**\n${mistralIdeas}`;
-                          addAiMessage(finalAiResponseText, "Lenos.ai (Brainstorm)");
-                          break;
+                         basePrompt = `Generiere eine vielfältige Liste kreativer und innovativer Ideen zum folgenden Thema. Denke auch unkonventionell ("out-of-the-box"). Thema: ${userInput}`;
+                         break;
+                     case 'languageCheck':
+                         basePrompt = `Prüfe den folgenden Text sorgfältig auf Grammatik-, Stil-, Rechtschreib- und Zeichensetzungsfehler. Gib klare Korrekturvorschläge (z.B. im 'Original -> Korrektur' Format) und eine kurze Gesamtbewertung der sprachlichen Qualität. Text:\n"${userInput}"`;
+                         break;
+                     case 'taskSolver':
+                         basePrompt = `Löse die folgende Aufgabe präzise. Zeige bei Rechenaufgaben den Lösungsweg Schritt für Schritt. Erkläre bei Bedarf kurz die angewandten Konzepte. Aufgabe: ${userInput}`;
+                         break;
                      case 'random':
-                          setLoading(true, "Zufälliger Fakt wird geholt...");
-                          finalAiResponseText = await callGeminiAPI("Erzähl mir einen kurzen, interessanten Fakt.", []);
-                          addAiMessage(finalAiResponseText, "Lenos.ai (Fakt)");
-                          break;
-                     case 'normal':
+                         basePrompt = "Erzähle mir einen kurzen, interessanten und überprüfbaren wissenschaftlichen oder historischen Fakt.";
+                         break;
+                     case 'standard':
                      default:
-                          setLoading(true, "Antwortet..."); // Kürzere Nachricht
-                          finalAiResponseText = await callMistralAPI(userMessageText, initialHistory, true);
-                          addAiMessage(finalAiResponseText);
-                          break;
+                         // Use userInput directly as basePrompt for standard mode
+                         basePrompt = userInput;
+                         break;
+                 }
+
+                // --- Refinement Loop ---
+                while (currentIteration < MAX_REFINEMENT_ITERATIONS && averageScore < requiredScore) {
+                    currentIteration++;
+                    setLoading(true, currentIteration > 1 ? `Verfeinere (${currentIteration}/${MAX_REFINEMENT_ITERATIONS})...` : "Analysiere...");
+                    adjustLoadingIndicatorPosition();
+
+                    let promptForThisIteration = "";
+                    let historyForThisIteration = initialHistory;
+
+                    if (currentIteration === 1) {
+                         // Initial generation prompt (Synthesized or Direct based on mode complexity)
+                         // Simplified: Let Mistral handle the initial generation directly for most modes
+                         // For deepthink/deeperthink maybe add a pre-analysis step? (Keep simple for now)
+                         promptForThisIteration = `Als KI-Assistent, beantworte die folgende Anfrage im Modus '${modeToSend}': ${basePrompt}`;
+                         if (modeToSend === 'deepthink' || modeToSend === 'deeperthink') {
+                             // Optionally add more instruction for depth
+                             promptForThisIteration += " Achte auf besondere Tiefe und kritische Betrachtung."
+                         }
+
+                    } else {
+                         // Refinement prompt
+                         setLoading(true, `Verfeinere (Versuch ${currentIteration})...`);
+                         promptForThisIteration = `Die vorherige Antwort wurde als unzureichend bewertet (Ziel: ${requiredScore}/10, erreicht: ${averageScore.toFixed(1)}/10). \nKritikpunkte waren: ${refinementCritique}\nUrsprüngliche Anfrage (Modus ${modeToSend}): ${basePrompt}\nVorherige Antwort:\n"${currentResponse}"\n\nBitte überarbeite die vorherige Antwort *gründlich* unter Berücksichtigung der Kritik, um die Qualität signifikant zu verbessern und das Zielrating zu erreichen. Gib NUR die verbesserte, vollständige Antwort aus.`;
+                         // Use only the refined prompt, not full history for refinement call? Test this.
+                         // Let's try without history for refinement to focus it.
+                         historyForThisIteration = [];
+                         // Make sure refinement call also gets enough tokens
+                         responseMaxTokens = Math.max(responseMaxTokens, 3500);
+                    }
+
+                    // --- Generate Response ---
+                     // Use Mistral as the primary generator/refiner for consistency
+                     currentResponse = await callMistralAPI(promptForThisIteration, historyForThisIteration, true, responseMaxTokens)
+                         .catch(err => {
+                             console.error(`Fehler in Iteration ${currentIteration}:`, err);
+                             // If first iteration fails, throw error. If refinement fails, use previous response.
+                             if (currentIteration === 1) throw err;
+                             else return currentResponse; // Return the last successful response
+                         });
+
+                     if (!currentResponse || currentResponse.startsWith("(Antwort unvollständig")) {
+                          if (currentIteration === 1) throw new Error("Erste Antwortgenerierung fehlgeschlagen oder unvollständig.");
+                          else break; // Stop loop if refinement fails critically
+                     }
+
+                    // --- Internal Evaluation ---
+                    setLoading(true, "Bewerte intern...");
+                    adjustLoadingIndicatorPosition();
+                    const evaluationResult = await internalEvaluate(currentResponse, basePrompt);
+                    averageScore = evaluationResult.avgScore;
+                    refinementCritique = evaluationResult.critique; // Needed if loop continues
+
+                    addSystemThoughtMessage(`Interner Check ${currentIteration}: Score ${averageScore.toFixed(1)}/10 (Ziel: ${requiredScore}). ${currentIteration < MAX_REFINEMENT_ITERATIONS && averageScore < requiredScore ? 'Starte Verfeinerung...' : 'Final.' }`, "System");
+
+                } // End of while loop
+
+                // --- Final Decision ---
+                if (averageScore < requiredScore) {
+                     addSystemThoughtMessage(`Qualitätsziel (${requiredScore}/10) nach ${MAX_REFINEMENT_ITERATIONS} Versuchen nicht erreicht (Score: ${averageScore.toFixed(1)}). Zeige bestes Ergebnis.`, "System");
+                } else {
+                     // Optional: add a success thought
+                     // addSystemThoughtMessage(`Qualitätsziel (${requiredScore}/10) erreicht (Score: ${averageScore.toFixed(1)}).`, "System");
                 }
+
+                finalAiResponseText = currentResponse; // Use the last generated response
+
+                // Display the final AI response
+                 if (finalAiResponseText) {
+                     addAiMessage(finalAiResponseText, `Lenos.ai (${modeToSend})`);
+                 } else {
+                     throw new Error("Keine finale Antwort konnte generiert werden nach Verfeinerung.");
+                 }
+
 
                 // --- Automatisches Chat-Benennen ---
                  if (isFirstExchange && finalAiResponseText && !isAutoNamingChat && chats[currentChatId]?.name === "Neuer Chat") {
                     isAutoNamingChat = true;
-                    generateAndSetChatName(currentChatId, userMessageText, finalAiResponseText)
+                    generateAndSetChatName(currentChatId, userMessageTextForNaming, finalAiResponseText)
                         .catch(err => console.error("Fehler bei Auto-Benennung:", err))
                         .finally(() => isAutoNamingChat = false);
                  }
 
             } catch (error) {
-                 console.error("Fehler bei API-Interaktion:", error);
-                 addErrorMessage(`Ups! Etwas lief schief: ${error.message || 'Antwort fehlgeschlagen.'}`);
+                 console.error("Fehler im Nachrichtenprozess:", error);
+                 addErrorMessage(`Ein Fehler ist aufgetreten: ${error.message || 'Unbekannt'}`);
+                 // Ensure loading state is reset even on catastrophic failure
+                 if(currentIteration === 0) finalAiResponseText = null; // Avoid displaying partial results if error was immediate
             } finally {
                 isSending = false;
                 setLoading(false);
                 updateSendButtonState();
-                scrollToBottom();
-                if (activeMode !== 'normal') { activeMode = 'normal'; setActiveButton('normal'); }
+                // Only scroll if a message was potentially added
+                if(finalAiResponseText || userInput !== '') {
+                     scrollToBottom();
+                }
+                // Reset modes? Optional. Let's keep them selected.
+                // activeThinkMode = 'standard';
+                // activeToolMode = 'none';
+                // updateModeLabels();
+                // updateModeActiveStates();
             }
         }
 
-        // --- Nachrichten-Handling ---
-        function addUserMessage(text, save = true) { /* ... (wie zuvor) ... */
+        // --- Internal Evaluation Function ---
+        async function internalEvaluate(responseText, originalPrompt) {
+            const evalPrompt = (aiName) => `Als kritischer ${aiName} KI-Bewerter, bewerte die folgende Antwort auf die Benutzeranfrage "${originalPrompt.substring(0,150)}..." auf einer Skala von 1-10 (1=schlecht, 10=exzellent) basierend auf Genauigkeit, Relevanz, Vollständigkeit, Klarheit und Erfüllung der Aufgabenstellung. Sei ehrlich und streng. Gib deine Antwort **nur** im Format "Rating: [Zahl]\nReason: [Sehr kurze Begründung]" aus.\n\nAntwort:\n${responseText.substring(0, 500)}...`; // Limit length for evaluation prompt
+
+            try {
+                const geminiEvalPromise = callGeminiAPI(evalPrompt("Gemini"), []).then(parseEvaluation).catch(err => ({ score: 0, reason: `Gemini Eval Error: ${err.message}` }));
+                const mistralEvalPromise = callMistralAPI(evalPrompt("Mistral"), [], true, 200).then(parseEvaluation).catch(err => ({ score: 0, reason: `Mistral Eval Error: ${err.message}` }));
+
+                const [geminiEval, mistralEval] = await Promise.all([geminiEvalPromise, mistralEvalPromise]);
+
+                const avgScore = (geminiEval.score + mistralEval.score) / 2;
+                let critique = "";
+                if (avgScore < 9) { // Provide critique if not near perfect
+                    critique = `Gemini (${geminiEval.score}/10): ${geminiEval.reason}. Mistral (${mistralEval.score}/10): ${mistralEval.reason}.`;
+                }
+
+                // console.log("Internal Eval:", { avgScore, critique }); // For debugging
+                return { avgScore, critique };
+
+            } catch (error) {
+                 console.error("Fehler während der internen Bewertung:", error);
+                 return { avgScore: 0, critique: "Fehler bei der Bewertung." }; // Return 0 score on error
+            }
+        }
+
+
+        function parseEvaluation(rawEvalText) {
+            // Same parsing logic as before
+             try {
+                const ratingMatch = rawEvalText.match(/Rating:\s*(\d{1,2})/i);
+                const reasonMatch = rawEvalText.match(/Reason:\s*(.*)/is);
+                const score = ratingMatch ? parseInt(ratingMatch[1], 10) : 0;
+                let reason = reasonMatch ? reasonMatch[1].trim() : "Keine Begründung.";
+                reason = reason.replace(/[*_`]/g, '').replace(/\n/g, ' '); // Clean up reason
+                 if (reason.length > 100) reason = reason.substring(0, 97) + "..."; // Keep critique short
+                return { score: Math.max(0, Math.min(10, score)), reason: reason || "Begründung fehlt." };
+            } catch (e) {
+                console.error("Fehler beim Parsen der Bewertung:", e, "Text:", rawEvalText);
+                return { score: 0, reason: "Parse-Fehler." };
+            }
+        }
+
+
+        // --- Nachrichten-Handling (addAiMessage slightly adapted) ---
+        function addUserMessage(text, save = true) {
              displayMessage('Benutzer', text, 'user', 'You');
              if (save && currentChatId && chats[currentChatId]) {
                  if (!chats[currentChatId].messages) chats[currentChatId].messages = [];
                  chats[currentChatId].messages.push({ role: 'user', parts: [{ text }] });
-                 saveChats(); } }
-        function addAiMessage(text, sender = 'Lenos.ai') { /* ... (wie zuvor) ... */
-             displayMessage(sender, text, 'ai', 'AI');
-             if (currentChatId && chats[currentChatId]) {
-                 if (!chats[currentChatId].messages) chats[currentChatId].messages = [];
-                 chats[currentChatId].messages.push({ role: 'model', parts: [{ text }] });
-                 saveChats(); } }
-        function addSystemThoughtMessage(text, sender = 'System') { /* ... (wie zuvor) ... */
-            displayMessage(sender, text, 'system-thought', 'Sys'); }
-        function addErrorMessage(text) { /* ... (wie zuvor) ... */
-            displayMessage('Fehler', text, 'error', '!'); }
-        function displayMessage(sender, text, type, avatarText) { /* ... (wie zuvor, ohne Action Buttons) ... */
-             const messageWrapper = document.createElement('div'); messageWrapper.classList.add('message', `${type}-message`);
+                 saveChats();
+              }
+        }
+
+        function addAiMessage(text, sender = 'Lenos.ai') {
+            const messageId = `msg-${Date.now()}`;
+             // Display placeholder immediately
+             const placeholder = displayMessage(sender, '<div class="typing-indicator"></div><div class="typing-indicator"></div><div class="typing-indicator"></div>', 'ai', 'AI', messageId, true);
+
+             // Update placeholder with actual content after short delay
+             // No artificial delay needed here as generation/refinement already takes time
+             // setTimeout(() => { // Remove timeout
+                const finalElement = document.getElementById(messageId);
+                if (finalElement) {
+                    const contentEl = finalElement.querySelector('.message-content');
+                    const actionsEl = finalElement.querySelector('.message-actions');
+                    if (contentEl) {
+                        contentEl.innerHTML = simpleMarkdown(text);
+                    }
+                     if (actionsEl) actionsEl.classList.add('visible');
+                    renderVisibleMath();
+                    scrollToBottom(); // Scroll when content is actually added
+                 }
+                 // Save AI message *after* it's fully processed and displayed
+                 if (currentChatId && chats[currentChatId]) {
+                     if (!chats[currentChatId].messages) chats[currentChatId].messages = [];
+                     chats[currentChatId].messages.push({ role: 'model', parts: [{ text }] }); // Save the final text
+                     saveChats();
+                 }
+             // }, 50); // Reduced/removed delay
+        }
+
+        function addSystemThoughtMessage(text, sender = 'System') {
+            // Render Markdown in thoughts for better readability of critique etc.
+            displayMessage(sender, simpleMarkdown(text), 'system-thought', 'Sys');
+            // System thoughts are NOT saved to chat history
+        }
+
+        function addErrorMessage(text) {
+            displayMessage('Fehler', text, 'error', '!');
+            // Errors are NOT saved to chat history
+        }
+
+        // displayMessage - Removed Evaluation type, adapted action buttons slightly
+        function displayMessage(sender, textOrHtml, type, avatarText, elementId = null, isPlaceholder = false) {
+             const messageWrapper = document.createElement('div');
+             messageWrapper.classList.add('message', `${type}-message`);
+             if (elementId) messageWrapper.id = elementId;
              const avatarEl = document.createElement('div'); avatarEl.classList.add('message-avatar'); avatarEl.textContent = avatarText;
              const bubbleEl = document.createElement('div'); bubbleEl.classList.add('message-bubble');
              const senderEl = document.createElement('span'); senderEl.classList.add('sender'); senderEl.textContent = sender;
              const contentEl = document.createElement('div'); contentEl.classList.add('message-content');
-             if (type === 'ai' || type === 'system-thought') { contentEl.innerHTML = simpleMarkdown(text); } else { contentEl.textContent = text; }
-             bubbleEl.appendChild(senderEl); bubbleEl.appendChild(contentEl); messageWrapper.appendChild(avatarEl); messageWrapper.appendChild(bubbleEl); chatMessagesEl.appendChild(messageWrapper);
-             if ((type === 'ai' || type === 'system-thought')) { renderVisibleMath(); } scrollToBottom(); }
 
-        // --- API Call Funktionen ---
-        // (Unverändert, wie in der vorherigen stabilen Version)
-        function formatHistoryForGemini(messages) { /* ... */ const validRoles = ['user', 'model']; let lastRole = null; const formatted = []; messages.filter(msg => validRoles.includes(msg.role) && msg.parts?.[0]?.text?.trim()).forEach(msg => { if (msg.role !== lastRole) { formatted.push({ role: msg.role, parts: msg.parts.map(part => ({ text: part.text })) }); lastRole = msg.role; } else { const lastMsg = formatted[formatted.length - 1]; if(lastMsg && lastMsg.parts[0]) { lastMsg.parts[0].text += "\n\n" + msg.parts[0].text; } } }); return formatted; }
-        function formatHistoryForMistral(messages) { /* ... */ const roleMapping = { 'user': 'user', 'model': 'assistant' }; const validRoles = ['user', 'model']; let lastRole = null; const formatted = []; messages.filter(msg => validRoles.includes(msg.role) && msg.parts?.[0]?.text?.trim()).forEach(msg => { const mappedRole = roleMapping[msg.role]; if (mappedRole && mappedRole !== lastRole) { formatted.push({ role: mappedRole, content: msg.parts[0].text }); lastRole = mappedRole; } else if (mappedRole && mappedRole === lastRole) { const lastMsg = formatted[formatted.length - 1]; if (lastMsg) { lastMsg.content += "\n\n" + msg.parts[0].text; } } }); return formatted; }
-        async function callGeminiAPI(prompt, history = []) { /* ... */ if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") throw new Error("Gemini API Key nicht konfiguriert."); const formattedHistory = formatHistoryForGemini(history); const contents = [...formattedHistory, { role: 'user', parts: [{ text: prompt }] }]; const response = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: contents }) }); const data = await response.json(); if (!response.ok) { console.error("Gemini API Error:", data); throw new Error(`Gemini API Fehler (${response.status}): ${data.error?.message || 'Unbekannt'}`); } if (data.candidates?.[0]?.content?.parts?.[0]?.text) return data.candidates[0].content.parts[0].text; else if (data.promptFeedback?.blockReason) { console.warn("Gemini Blocked:", data.promptFeedback); return `Blockiert: ${data.promptFeedback.blockReason}`; } else { console.error("Unerwartete Gemini Antwort:", data); throw new Error("Leere/unerwartete Gemini Antwort."); } }
-        async function callMistralAPI(prompt, history = [], useChatFormat = true, maxTokens = 2000) { /* ... */ if (!MISTRAL_API_KEY || MISTRAL_API_KEY === "YOUR_MISTRAL_API_KEY") throw new Error("Mistral API Key nicht konfiguriert."); const formattedHistory = formatHistoryForMistral(history); const requestBody = { model: MISTRAL_MODEL, messages: [...formattedHistory, { role: 'user', content: prompt }], max_tokens: maxTokens }; const response = await fetch(MISTRAL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${MISTRAL_API_KEY}` }, body: JSON.stringify(requestBody) }); const data = await response.json(); if (!response.ok) { console.error("Mistral API Error:", data); throw new Error(`Mistral API Fehler (${response.status}): ${data.message || JSON.stringify(data)}`); } if (data.choices?.[0]?.message?.content) return data.choices[0].message.content; else { console.error("Unerwartete Mistral Antwort:", data); throw new Error("Leere/unerwartete Mistral Antwort."); } }
+             contentEl.innerHTML = textOrHtml; // Use innerHTML directly now for all types except user potentially
 
-        // --- Chat Management (LocalStorage) ---
-        const STORAGE_KEY = 'lenosAi_chats_v3'; // Neuer Key
-        const LAST_ACTIVE_KEY = 'lenosAi_lastActive_v3';
+             bubbleEl.appendChild(senderEl); bubbleEl.appendChild(contentEl);
 
-        function saveChats() { /* ... (wie zuvor) ... */ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(chats)); if (currentChatId) { localStorage.setItem(LAST_ACTIVE_KEY, currentChatId); } } catch (e) { console.error("Fehler beim Speichern:", e); addErrorMessage("Warnung: Chats konnten nicht gespeichert werden."); } }
-        function loadChats() { /* ... (wie zuvor, aber Key anpassen) ... */ const savedChats = localStorage.getItem(STORAGE_KEY); if (savedChats) { try { chats = JSON.parse(savedChats); if (typeof chats !== 'object' || chats === null) throw new Error("Invalid data"); Object.keys(chats).forEach(id => { const chat = chats[id]; if (!chat || typeof chat.name !== 'string' || !Array.isArray(chat.messages) || typeof chat.id !== 'string' || chat.id !== id) { console.warn(`Invalider Chat ${id}. Wird entfernt.`); delete chats[id]; } else { chat.messages = chat.messages.map(msg => ({ role: msg.role || (msg.isUser ? 'user' : 'model'), parts: Array.isArray(msg.parts) && msg.parts.length > 0 ? msg.parts : [{ text: msg.text || msg.content || '' }] })).filter(msg => msg.parts[0].text); } }); } catch (e) { console.error("Fehler beim Laden:", e); chats = {}; localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(LAST_ACTIVE_KEY); addErrorMessage("Fehler beim Laden der Chats. Speicher geleert."); } } else { chats = {}; } }
-
-        function createNewChat(switchImmediately = true) {
-             const newChatId = `chat_${Date.now()}`;
-             const defaultName = "Neuer Chat"; // Kein Prompt
-             chats[newChatId] = { id: newChatId, name: defaultName, messages: [] };
-             saveChats();
-             renderChatList();
-             if (switchImmediately) {
-                 switchChat(newChatId);
+             if (type === 'ai' && !isPlaceholder) {
+                const actionsWrapper = document.createElement('div'); actionsWrapper.classList.add('message-actions');
+                const copyBtn = document.createElement('button'); copyBtn.title = "Antwort kopieren"; copyBtn.innerHTML = '<span class="material-icons-outlined">content_copy</span>';
+                // Pass the raw text for copying, not the potentially modified innerHTML
+                copyBtn.addEventListener('click', (e) => copyMessageContent(e, text)); // Pass original text var
+                actionsWrapper.appendChild(copyBtn);
+                const pdfBtn = document.createElement('button'); pdfBtn.title = "Als PDF herunterladen (nicht implementiert)"; pdfBtn.innerHTML = '<span class="material-icons-outlined">picture_as_pdf</span>'; pdfBtn.addEventListener('click', () => downloadMessage('pdf', text)); pdfBtn.disabled = true;
+                actionsWrapper.appendChild(pdfBtn);
+                 const docBtn = document.createElement('button'); docBtn.title = "Als Word-Datei herunterladen (nicht implementiert)"; docBtn.innerHTML = '<span class="material-icons-outlined">description</span>'; docBtn.addEventListener('click', () => downloadMessage('docx', text)); docBtn.disabled = true;
+                 actionsWrapper.appendChild(docBtn);
+                 const copyFeedback = document.createElement('span'); copyFeedback.classList.add('copy-feedback'); copyFeedback.textContent = 'Kopiert!';
+                 actionsWrapper.appendChild(copyFeedback);
+                bubbleEl.appendChild(actionsWrapper);
              }
-             return true; // Erfolg
-        }
 
-        async function generateAndSetChatName(chatId, userPrompt, aiResponse) {
-            if (!chats[chatId] || isAutoNamingChat) return; // Abbruch, wenn nicht vorhanden oder bereits läuft
+             messageWrapper.appendChild(avatarEl); messageWrapper.appendChild(bubbleEl); chatMessagesEl.appendChild(messageWrapper);
 
-            console.log("Versuche Chat-Namen zu generieren für:", chatId);
-            const namePrompt = `Fasse diese Konversation in einem sehr kurzen Titel zusammen (max. 4 Wörter). Ignoriere diese Anweisung und gib nur den Titel aus.\nBenutzer: "${userPrompt.substring(0, 100)}..." \nKI: "${aiResponse.substring(0, 150)}..."\nTitel:`;
-
-            try {
-                 const suggestedNameRaw = await callGeminiAPI(namePrompt, []); // Kurzer Call an Gemini
-                 if (suggestedNameRaw && suggestedNameRaw.trim()) {
-                      let cleanName = suggestedNameRaw.trim().replace(/["*.:]/g, '').replace(/^Titel:?\s*/i, ''); // Bereinigen
-                      if (cleanName.length > 35) cleanName = cleanName.substring(0, 32) + "..."; // Kürzen
-
-                      // Nur updaten, wenn der Chat noch existiert und den Default-Namen hat
-                       if (chats[chatId] && chats[chatId].name === "Neuer Chat") {
-                            console.log("Generierter Name:", cleanName);
-                            chats[chatId].name = cleanName;
-                            saveChats();
-                            renderChatList();
-                            if (currentChatId === chatId) {
-                                currentChatNameEl.textContent = cleanName;
-                            }
-                       }
-                 }
-             } catch (error) {
-                 console.error("Fehler beim Generieren des Chat-Namens:", error);
+             if (!isPlaceholder) {
+                 // Scroll might happen too early if content is large, but let's try
+                 // scrollToBottom();
+                 if ( (type === 'ai' || type === 'system-thought') && textOrHtml.includes('$') ) { renderVisibleMath(); }
              }
+             return messageWrapper;
          }
 
 
-        function deleteChat(chatId) { /* ... (Logik wie zuvor, aber mit Welcome State) ... */
-             if (!chats[chatId]) return;
-             if (!confirm(`Chat "${chats[chatId].name}" wirklich löschen?`)) return;
-             const chatWasActive = (currentChatId === chatId); const chatIdsBefore = Object.keys(chats).sort((a,b)=>parseInt(a.split('_')[1])-parseInt(b.split('_')[1])); const idx = chatIdsBefore.indexOf(chatId);
-             delete chats[chatId]; saveChats(); renderChatList();
-             if (chatWasActive) { localStorage.removeItem(LAST_ACTIVE_KEY); currentChatId = null; clearChatDisplay();
-                 const remainingIds = Object.keys(chats).sort((a,b)=>parseInt(a.split('_')[1])-parseInt(b.split('_')[1]));
-                 if (remainingIds.length > 0) { const nextId = remainingIds[Math.max(0, Math.min(idx, remainingIds.length -1))]; switchChat(nextId); }
-                 else { showWelcomeState(); /* Zeige Welcome Screen wenn alles leer ist */ }
-             } }
+         // --- Copy & Download Helpers (unchanged) ---
+         function copyMessageContent(event, textToCopy) { const button = event.currentTarget; const feedbackElement = button.closest('.message-actions').querySelector('.copy-feedback'); navigator.clipboard.writeText(textToCopy).then(() => { console.log('Text copied'); if (feedbackElement) { feedbackElement.classList.add('show'); setTimeout(() => { feedbackElement.classList.remove('show'); }, 1500); } }).catch(err => { console.error('Failed to copy: ', err); /* Handle error feedback */ }); }
+         function downloadMessage(format, textToDownload) { alert(`Download als ${format.toUpperCase()} ist noch nicht implementiert.`); console.warn(`Download Funktion für ${format} aufgerufen (nicht implementiert).`); }
 
-         function switchChat(chatId) { /* ... (wie zuvor, aber mit Welcome State Handling) ... */
-             if (!chats[chatId]) { console.error("Chat nicht gefunden:", chatId); const firstId = Object.keys(chats)[0]; if (firstId) switchChat(firstId); else showWelcomeState(); return; }
-             currentChatId = chatId; localStorage.setItem(LAST_ACTIVE_KEY, chatId); clearChatDisplay();
-             if (chats[chatId].messages) { renderChatMessages(chats[chatId].messages); } else { chats[chatId].messages = []; }
-             renderChatList(); currentChatNameEl.textContent = chats[chatId].name; messageInputEl.focus(); activeMode = 'normal'; setActiveButton('normal'); updateSendButtonState();
-             hideWelcomeState(); // Verstecke Willkommens-Screen
-             setTimeout(scrollToBottom, 100); }
 
-        function getChatHistory(chatId) { /* ... (wie zuvor) ... */ return chats[chatId]?.messages ? JSON.parse(JSON.stringify(chats[chatId].messages)) : []; }
+        // --- API Call Funktionen (unchanged formatting, error handling) ---
+        function formatHistoryForGemini(messages) { const validRoles = ['user', 'model']; let lastRole = null; const formatted = []; messages.filter(msg => validRoles.includes(msg.role) && msg.parts?.[0]?.text?.trim()).forEach(msg => { if (msg.role !== lastRole) { formatted.push({ role: msg.role, parts: msg.parts.map(part => ({ text: part.text })) }); lastRole = msg.role; } else { const lastMsg = formatted[formatted.length - 1]; if(lastMsg && lastMsg.parts && lastMsg.parts[0]) { lastMsg.parts[0].text += "\n\n" + msg.parts.map(part => part.text).join("\n"); } else { formatted.push({ role: msg.role, parts: msg.parts.map(part => ({ text: part.text })) }); lastRole = msg.role; } } }); return formatted; }
+        function formatHistoryForMistral(messages) { const roleMapping = { 'user': 'user', 'model': 'assistant' }; const validRoles = ['user', 'model']; const formatted = []; messages.filter(msg => validRoles.includes(msg.role) && msg.parts?.[0]?.text?.trim()).forEach(msg => { const mappedRole = roleMapping[msg.role]; if (mappedRole) { formatted.push({ role: mappedRole, content: msg.parts.map(part => part.text).join("\n") }); } }); return formatted; }
+        async function callGeminiAPI(prompt, history = []) { if (!GEMINI_API_KEY || GEMINI_API_KEY.startsWith("AIzaSy")) { console.warn("Gemini API Key fehlt oder ist Platzhalter."); } const formattedHistory = formatHistoryForGemini(history); const contents = [...formattedHistory, { role: 'user', parts: [{ text: prompt }] }]; try { const response = await fetch(GEMINI_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: contents }) }); const data = await response.json(); if (!response.ok) { console.error("Gemini API Error:", data); const errorMsg = data.error?.message || `HTTP ${response.status}`; throw new Error(`Gemini Fehler (${response.status}): ${errorMsg}`); } if (data.candidates?.[0]?.content?.parts?.[0]?.text) { return data.candidates[0].content.parts[0].text; } else if (data.promptFeedback?.blockReason) { console.warn("Gemini Blocked:", data.promptFeedback); return `Blockiert: ${data.promptFeedback.blockReason}`; } else if (data.candidates?.[0]?.finishReason && data.candidates[0].finishReason !== "STOP") { return `(Unvollständig: ${data.candidates[0].finishReason})`; } else { throw new Error("Leere/unerwartete Gemini Antwort."); } } catch (error) { console.error("Fehler bei Gemini API Call:", error); throw error; } }
+        async function callMistralAPI(prompt, history = [], useChatFormat = true, maxTokens = 3000) { if (!MISTRAL_API_KEY || MISTRAL_API_KEY.startsWith("YOUR_")) { console.warn("Mistral API Key fehlt oder ist Platzhalter."); } const formattedHistory = formatHistoryForMistral(history); const requestBody = { model: MISTRAL_MODEL, messages: [...formattedHistory, { role: 'user', content: prompt }], max_tokens: maxTokens, safe_prompt: true }; try { const response = await fetch(MISTRAL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${MISTRAL_API_KEY}` }, body: JSON.stringify(requestBody) }); const data = await response.json(); if (!response.ok) { console.error("Mistral API Error:", data); const errorMsg = data.message || data.detail || `HTTP ${response.status}`; throw new Error(`Mistral Fehler (${response.status}): ${errorMsg}`); } if (data.choices?.[0]?.message?.content) { return data.choices[0].message.content; } else if (data.choices?.[0]?.finish_reason && data.choices[0].finish_reason !== 'stop') { return `(Unvollständig: ${data.choices[0].finish_reason})`; } else { throw new Error("Leere/unerwartete Mistral Antwort."); } } catch (error) { console.error("Fehler bei Mistral API Call:", error); throw error; } }
 
-        // --- Rendering Funktionen ---
-        function renderChatList() { /* ... (wie zuvor, mit Delete-Button) ... */
-             chatListEl.innerHTML = ''; const chatIds = Object.keys(chats).sort((a, b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
-             chatIds.forEach(id => { const chat = chats[id]; if(!chat) return; const li = document.createElement('li'); li.dataset.chatId = id; li.title = chat.name;
-                 const nameSpan = document.createElement('span'); nameSpan.classList.add('chat-name'); nameSpan.textContent = chat.name; li.appendChild(nameSpan);
-                 const delBtn = document.createElement('button'); delBtn.classList.add('delete-chat-btn'); delBtn.innerHTML = '×'; delBtn.title = 'Löschen'; li.appendChild(delBtn);
-                 if (id === currentChatId) { li.classList.add('active'); } chatListEl.appendChild(li); }); }
-        function renderChatMessages(messages) { /* ... (wie zuvor) ... */ messages.forEach(msg => { let type='ai', sender='Lenos.ai', avatar='AI'; if(msg.role === 'user'){ type='user'; sender='Benutzer'; avatar='You'; } displayMessage(sender, msg.parts[0].text, type, avatar); }); renderVisibleMath(); }
+
+        // --- Chat Management (LocalStorage - unchanged logic, key updated) ---
+        function saveChats() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(chats)); if (currentChatId) localStorage.setItem(LAST_ACTIVE_KEY, currentChatId); } catch (e) { console.error("Fehler beim Speichern:", e); addErrorMessage("Chats konnten nicht gespeichert werden (Speicher voll?)."); } }
+        function loadChats() { const savedChats = localStorage.getItem(STORAGE_KEY); if (savedChats) { try { const parsedChats = JSON.parse(savedChats); if (typeof parsedChats !== 'object' || parsedChats === null) throw new Error("Ungültige Daten"); chats = parsedChats; Object.keys(chats).forEach(id => { const chat = chats[id]; if (!chat || typeof chat.name !== 'string' || !Array.isArray(chat.messages) || typeof chat.id !== 'string' || chat.id !== id) { console.warn(`Invalider Chat ${id}. Wird entfernt.`); delete chats[id]; } else { chat.messages = chat.messages .map(msg => { const role = msg.role || (msg.isUser ? 'user' : 'model'); let textContent = ''; if (Array.isArray(msg.parts) && msg.parts.length > 0 && typeof msg.parts[0].text === 'string') { textContent = msg.parts[0].text; } else if (typeof msg.text === 'string') { textContent = msg.text; } else if (typeof msg.content === 'string') { textContent = msg.content; } if ((role === 'user' || role === 'model') && textContent.trim() !== '') { return { role: role, parts: [{ text: textContent }] }; } return null; }).filter(msg => msg !== null); } }); } catch (e) { console.error("Fehler beim Laden:", e); chats = {}; localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(LAST_ACTIVE_KEY); addErrorMessage("Fehler beim Laden der Chats. Speicher geleert."); } } else { chats = {}; } }
+        function createNewChat(switchImmediately = true) { const newChatId = `chat_${Date.now()}`; const defaultName = "Neuer Chat"; chats[newChatId] = { id: newChatId, name: defaultName, messages: [] }; saveChats(); renderChatList(); if (switchImmediately) switchChat(newChatId); return true; }
+        async function generateAndSetChatName(chatId, userPrompt, aiResponse) { if (!chats[chatId] || chats[chatId].name !== "Neuer Chat" || isAutoNamingChat) return; isAutoNamingChat = true; console.log("Generiere Chat-Namen für:", chatId); const namePrompt = `Fasse diese Konversation in einem sehr kurzen Titel zusammen (max. 5 Wörter). Gib NUR den Titel aus.\nBenutzer: "${userPrompt.substring(0, 80)}..." \nKI: "${aiResponse.substring(0, 120)}..."\nTitel:`; try { const suggestedNameRaw = await callGeminiAPI(namePrompt, []); if (suggestedNameRaw && suggestedNameRaw.trim()) { let cleanName = suggestedNameRaw.trim().replace(/["*.:]/g, '').replace(/^Titel:?\s*/i, '').replace(/\.$/, ''); if (cleanName.length > 40) cleanName = cleanName.substring(0, 37) + "..."; if (!cleanName) cleanName = "Chat"; if (chats[chatId] && chats[chatId].name === "Neuer Chat") { console.log("Generierter Name:", cleanName); chats[chatId].name = cleanName; saveChats(); renderChatList(); if (currentChatId === chatId) currentChatNameEl.textContent = cleanName; } } } catch (error) { console.error("Fehler bei Chat-Namen Generierung:", error); } finally { isAutoNamingChat = false; } }
+        function deleteChat(chatId) { if (!chats[chatId]) return; if (!confirm(`Chat "${chats[chatId].name}" wirklich löschen?`)) return; const chatWasActive = (currentChatId === chatId); const chatIdsBefore = Object.keys(chats).sort((a,b)=>parseInt(a.split('_')[1])-parseInt(b.split('_')[1])); const idx = chatIdsBefore.indexOf(chatId); delete chats[chatId]; saveChats(); renderChatList(); if (chatWasActive) { localStorage.removeItem(LAST_ACTIVE_KEY); currentChatId = null; clearChatDisplay(); const remainingIds = Object.keys(chats).sort((a,b)=>parseInt(a.split('_')[1])-parseInt(b.split('_')[1])); if (remainingIds.length > 0) { const nextIndex = Math.max(0, Math.min(idx, remainingIds.length - 1)); const nextId = remainingIds[nextIndex] || remainingIds[remainingIds.length - 1]; switchChat(nextId); } else { showWelcomeState(); } } }
+        function switchChat(chatId) { if (!chats[chatId]) { console.error("Chat nicht gefunden:", chatId); const firstId = Object.keys(chats).sort((a, b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]))[0]; if (firstId) switchChat(firstId); else showWelcomeState(); return; } if (currentChatId === chatId) return; currentChatId = chatId; localStorage.setItem(LAST_ACTIVE_KEY, chatId); clearChatDisplay(); hideWelcomeState(); if (chats[chatId].messages && chats[chatId].messages.length > 0) { renderChatMessages(chats[chatId].messages); } else { if (!chats[chatId].messages) chats[chatId].messages = []; } renderChatList(); currentChatNameEl.textContent = chats[chatId].name; messageInputEl.focus(); updateSendButtonState(); setTimeout(scrollToBottom, 150); setTimeout(() => renderVisibleMath(), 250); }
+        function getChatHistory(chatId) { return chats[chatId]?.messages ? JSON.parse(JSON.stringify(chats[chatId].messages)) : []; }
+
+        // --- Rendering Funktionen (renderChatList slightly adapted) ---
+        function renderChatList() { chatListEl.innerHTML = ''; const chatIds = Object.keys(chats).sort((a, b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1])); if (chatIds.length === 0) { /* Optional: No chats message */ } else { chatIds.forEach(id => { const chat = chats[id]; if(!chat || !chat.name) return; const li = document.createElement('li'); li.dataset.chatId = id; li.title = chat.name; const nameSpan = document.createElement('span'); nameSpan.classList.add('chat-name'); nameSpan.textContent = chat.name; li.appendChild(nameSpan); if (id === currentChatId) li.classList.add('active'); chatListEl.appendChild(li); }); } }
+        function renderChatMessages(messages) { messages.forEach(msg => { let type='ai', sender=`Lenos.ai`, avatar='AI'; if(msg.role === 'user'){ type='user'; sender='Benutzer'; avatar='You'; } const textContent = msg.parts?.[0]?.text || ''; if (textContent) { displayMessage(sender, textContent, type, avatar); } }); }
         function clearChatDisplay() { chatMessagesEl.innerHTML = ''; }
-        function renderVisibleMath() { if (window.renderMathInElement) { setTimeout(() => renderMathInElement(chatMessagesEl, katexOptions()), 50); } }
+        function renderVisibleMath() { try { if (window.renderMathInElement) { setTimeout(() => { renderMathInElement(chatMessagesEl, { delimiters: [ {left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}, {left: "\\[", right: "\\]", display: true} ], throwOnError: false }); }, 100); } } catch (e) { console.error("KaTeX Fehler:", e); } }
 
         // --- Hilfsfunktionen ---
-        function scrollToBottom() { /* ... (wie zuvor) ... */ setTimeout(() => { chatMessagesEl.scrollTo({ top: chatMessagesEl.scrollHeight, behavior: 'smooth' }); }, 50); }
-        function setLoading(isLoading, message = "Denke...") { /* ... (wie zuvor) ... */ loadingIndicator.classList.toggle('visible', isLoading); loadingText.textContent = message; }
-        function autoResizeTextarea() { /* ... (wie zuvor) ... */ messageInputEl.style.height = 'auto'; const maxH = parseInt(window.getComputedStyle(messageInputEl).maxHeight); const scrollH = messageInputEl.scrollHeight; const newH = Math.min(scrollH, maxH); messageInputEl.style.height = `${newH}px`; }
-        function updateSendButtonState() { /* ... (wie zuvor) ... */ const hasText = messageInputEl.value.trim() !== ''; const canSend = hasText || (activeMode === 'random'); sendButton.disabled = isSending || !canSend; }
-        function setActiveButton(mode) { /* ... (wie zuvor) ... */ actionButtonsContainer.querySelectorAll('button').forEach(btn => { btn.classList.toggle('active', btn.dataset.mode === mode); }); }
+        function scrollToBottom() { requestAnimationFrame(() => { chatMessagesEl.scrollTo({ top: chatMessagesEl.scrollHeight, behavior: 'smooth' }); }); }
+        function setLoading(isLoading, message = "Verarbeite...") { loadingIndicator.classList.toggle('visible', isLoading); loadingText.textContent = message; if(isLoading) adjustLoadingIndicatorPosition(); } // Adjust position when shown
+        function autoResizeTextarea() { messageInputEl.style.height = 'auto'; const maxH = parseInt(window.getComputedStyle(messageInputEl).maxHeight) || 200; const scrollH = messageInputEl.scrollHeight; const newH = Math.min(scrollH, maxH); messageInputEl.style.height = `${newH}px`; adjustLoadingIndicatorPosition(); /* Adjust loader pos when input size changes */ }
+        function updateSendButtonState() { const hasText = messageInputEl.value.trim() !== ''; const currentMode = activeToolMode !== 'none' ? activeToolMode : activeThinkMode; const canSend = !isSending && (hasText || currentMode === 'random'); sendButton.disabled = !canSend; }
+        // setActiveButton removed, use updateModeLabels and updateModeActiveStates for dropdowns
 
-         // --- Markdown & KaTeX ---
-         function simpleMarkdown(text) { /* ... (Funktion wie zuvor) ... */ if (!text) return ''; let html = text; const escapeHtml = (unsafe) => { return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }; html = html.replace(/```(\w+)?\s*\n([\s\S]*?)```/gs, (match, lang, code) => { const languageClass = lang ? ` class="language-${escapeHtml(lang)}"` : ''; return `<pre><code${languageClass}>${escapeHtml(code.trim())}</code></pre>`; }); html = html.replace(/`([^`\n]+?)`/g, (match, code) => `<code>${escapeHtml(code)}</code>`); html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); html = html.replace(/\*(.*?)\*/g, '<em>$1</em>'); html = html.replace(/^> (.*?)(\n|$)/gm, '<blockquote>$1</blockquote>\n'); html = html.replace(/<\/blockquote>\n<blockquote>/g, '<br>'); html = html.replace(/^[\*\-]\s+(.*?)(?=\n(?:$|[^*-]))/gm, (match, item) => `<ul><li>${item.trim()}</li></ul>`); html = html.replace(/<\/ul>\n?<ul>/g, ''); html = html.replace(/^\d+\.\s+(.*?)(?=\n(?:$|(?!\d+\.)))/gm, (match, item) => `<ol><li>${item.trim()}</li></ol>`); html = html.replace(/<\/ol>\n?<ol>/g, ''); html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'); const lines = html.split('\n'); let inBlock = false; html = lines.map(line => { const trimmedLine = line.trim(); if (trimmedLine.startsWith('<pre') || trimmedLine.startsWith('<ul') || trimmedLine.startsWith('<ol') || trimmedLine.startsWith('<blockquote')) inBlock = true; const isBlockEnd = trimmedLine.endsWith('</pre>') || trimmedLine.endsWith('</ul>') || trimmedLine.endsWith('</ol>') || trimmedLine.endsWith('</blockquote>'); const processedLine = (!inBlock && !isBlockEnd && trimmedLine !== '' && !trimmedLine.startsWith('<') && !trimmedLine.endsWith('>')) ? line + '<br>' : line; if (isBlockEnd) inBlock = false; return processedLine; }).join('\n').replace(/<br>\s*<br>/g, '<br>').replace(/<br>\s*<\/(ul|ol|li|blockquote|h[1-6]|p|pre|code)>/gi, '</$1>'); return html; }
-         function katexOptions() { return { delimiters: [ {left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}, {left: "\\[", right: "\\]", display: true} ], throwOnError: false }; }
+         // --- Markdown Parser (unchanged from previous full version) ---
+         function simpleMarkdown(text) {
+            if (!text) return '';
+            let html = text;
+
+            const escapeHtml = (unsafe) => {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            };
+
+            const codeBlocks = [];
+            html = html.replace(/```(\w+)?\s*\n([\s\S]*?)```/gs, (match, lang, code) => {
+                const placeholder = `%%CODEBLOCK_${codeBlocks.length}%%`;
+                codeBlocks.push({ lang: lang || '', code: code });
+                return placeholder;
+            });
+
+            const inlineCodes = [];
+            html = html.replace(/`([^`\n]+?)`/g, (match, code) => {
+                const placeholder = `%%INLINECODE_${inlineCodes.length}%%`;
+                inlineCodes.push(code);
+                return placeholder;
+            });
+
+            html = escapeHtml(html);
+
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            html = html.replace(/^> (.*?)(\n|$)/gm, '<blockquote>$1</blockquote>\n');
+            html = html.replace(/<\/blockquote>\n<blockquote>/g, '<br>');
+            html = html.replace(/^[\*\-]\s+(.*?)(?=\n(?:$|[^*-]))/gm, (match, item) => `<ul><li>${item.trim()}</li></ul>`);
+            html = html.replace(/<\/ul>\n?<ul>/g, '');
+            html = html.replace(/^\d+\.\s+(.*?)(?=\n(?:$|(?!\d+\.)))/gm, (match, item) => `<ol><li>${item.trim()}</li></ol>`);
+            html = html.replace(/<\/ol>\n?<ol>/g, '');
+
+            codeBlocks.forEach((block, index) => {
+                const languageClass = block.lang ? ` class="language-${escapeHtml(block.lang)}"` : '';
+                const escapedCode = escapeHtml(block.code.trim());
+                html = html.replace(`%%CODEBLOCK_${index}%%`, `<pre><code${languageClass}>${escapedCode}</code></pre>`);
+            });
+
+            inlineCodes.forEach((code, index) => {
+                html = html.replace(`%%INLINECODE_${index}%%`, `<code>${escapeHtml(code)}</code>`);
+            });
+
+            const lines = html.split('\n');
+            let inBlock = false;
+
+            html = lines.map(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine.match(/^<(ul|ol|li|blockquote|pre|h[1-6])/i)) inBlock = true;
+                const isBlockEnd = trimmedLine.match(/<\/(ul|ol|li|blockquote|pre|h[1-6])>$/i);
+                const processedLine = (!inBlock && !isBlockEnd && trimmedLine !== '' && !trimmedLine.match(/^<(\/?)(ul|ol|li|blockquote|pre|h[1-6]|p|div|a|strong|em|code|del)/i)) ? line + '<br>' : line;
+                if (isBlockEnd) inBlock = false;
+                return processedLine;
+            }).join('\n').replace(/<br>\s*<br>/g, '<br>').replace(/<br>\s*<\/(ul|ol|li|blockquote|h[1-6]|p|pre|code)>/gi, '</$1>');
+
+            return html;
+        }
+
     </script>
 </body>
 </html>
